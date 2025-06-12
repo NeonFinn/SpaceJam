@@ -13,32 +13,32 @@ class MyApp(ShowBase):
 
             self.Planet1 = self.loader.loadModel('Planets/protoPlanet.x')
             self.Planet1.reparentTo(self.render)
-            self.Planet1.setPos(0, 5000, 0) # randomize planet position later
+            self.Planet1.setPos(1800, 1500, -1500)  # randomize planet position later
             self.Planet1.setScale(350)
 
             self.Planet2 = self.loader.loadModel('Planets/protoPlanet.x')
             self.Planet2.reparentTo(self.render)
-            self.Planet2.setPos(400, 5000, 400)  # randomize planet position later
+            self.Planet2.setPos(-1900, 4950, 1700)  # randomize planet position later
             self.Planet2.setScale(350)
 
             self.Planet3 = self.loader.loadModel('Planets/protoPlanet.x')
             self.Planet3.reparentTo(self.render)
-            self.Planet3.setPos(800, 5000, 800)  # randomize planet position later
+            self.Planet3.setPos(900, 5300, 2000)  # randomize planet position later
             self.Planet3.setScale(350)
 
             self.Planet4 = self.loader.loadModel('Planets/protoPlanet.x')
             self.Planet4.reparentTo(self.render)
-            self.Planet4.setPos(1200, 5000, 1200)  # randomize planet position later
+            self.Planet4.setPos(-1200, 5000, -1800)  # randomize planet position later
             self.Planet4.setScale(350)
 
             self.Planet5 = self.loader.loadModel('Planets/protoPlanet.x')
             self.Planet5.reparentTo(self.render)
-            self.Planet5.setPos(1600, 5000, 1600)  # randomize planet position later
+            self.Planet5.setPos(0, 4850, 0)  # randomize planet position later
             self.Planet5.setScale(350)
 
             self.Planet6 = self.loader.loadModel('Planets/protoPlanet.x')
             self.Planet6.reparentTo(self.render)
-            self.Planet6.setPos(2000, 5000, 2000)  # randomize planet position later
+            self.Planet6.setPos(1600, 5200, 800)  # randomize planet position later
             self.Planet6.setScale(350)
 
         SetupScene()
