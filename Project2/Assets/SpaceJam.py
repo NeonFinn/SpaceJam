@@ -22,7 +22,7 @@ class MyApp(ShowBase):
             self.Hero = Classes.Player(self.loader, 'DroneDefender/DroneDefender.x', self.render, 'Player', 'DroneDefender/Drones.jpg', Vec3(0, 0, 0), 50)
 
         SetupScene()
-        self.taskMgr.add(self.SpawnDrones, 'SpawnDrones')  # add task to spawn drones
+        self.taskMgr.add(self.SpawnDrones, 'SpawnDrones')
 
     def DrawBaseballSeams(self, centralObject, droneName, step, numSeams, radius = 1):
         unitVec = defensePaths.BaseballSeams(step, numSeams, B = 0.4)
