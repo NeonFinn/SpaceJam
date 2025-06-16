@@ -29,3 +29,33 @@ def BaseballSeams(step, numSeams, B, F = 1):
     z = R * zzz / rrr
 
     return Vec3(x, y, z)
+
+def CircleX(radius = 1, numPoints = 100):
+    points = []
+    for i in range(numPoints):
+        angle = 2 * math.pi * i / numPoints
+        x = 0
+        y = radius * math.cos(angle)
+        z = radius * math.sin(angle)
+        points.append(Vec3(x, y, z))
+    return points
+
+def CircleY(radius = 1, numPoints = 100):
+    points = []
+    for i in range(numPoints):
+        angle = 2 * math.pi * i / numPoints
+        x = radius * math.cos(angle)
+        y = 0
+        z = radius * math.sin(angle)
+        points.append(Vec3(x, y, z))
+    return points
+
+def CircleZ(radius = 1, numPoints = 100):
+    points = []
+    for i in range(numPoints):
+        angle = 2 * math.pi * i / numPoints
+        x = radius * math.cos(angle)
+        y = radius * math.sin(angle)
+        z = 0
+        points.append(Vec3(x, y, z))
+    return points
