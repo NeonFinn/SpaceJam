@@ -29,7 +29,7 @@ class MyApp(ShowBase):
         unitVec = defensePaths.BaseballSeams(step, numSeams, B = 0.4)
         unitVec.normalize()
         position = unitVec * radius * 250 + centralObject.modelNode.getPos()
-        Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
+        Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 5)
 
     def DrawCloudDefense(self, centralObject, droneName):
         maxCloudDrones = 300
@@ -47,7 +47,7 @@ class MyApp(ShowBase):
         if step < len(points):
             unitVec = points[step]
             position = unitVec * 300
-            newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
+            newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 8)
             newDrone.modelNode.setColor(1, 0, 0, 1)
 
     def DrawCircleY(self, droneName, radius = 1, numPoints = 100, step = 0):
@@ -55,7 +55,7 @@ class MyApp(ShowBase):
         if step < len(points):
             unitVec = points[step]
             position = unitVec * 300
-            newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
+            newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 8)
             newDrone.modelNode.setColor(0, 1, 0, 1)
 
     def DrawCircleZ(self, droneName, radius = 1, numPoints = 100, step = 0):
@@ -63,7 +63,7 @@ class MyApp(ShowBase):
         if step < len(points):
             unitVec = points[step]
             position = unitVec * 300
-            newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
+            newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 8)
             newDrone.modelNode.setColor(0, 0, 1, 1)
 
     def SpawnDrones(self, task):
