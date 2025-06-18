@@ -19,7 +19,7 @@ class MyApp(ShowBase):
             self.Planet6 = Classes.Planet(self.loader, 'Planets/protoPlanet.x', self.render, 'Planet6', 'Planets/Venus.jpg', (3000, -900, -1400), 700)
 
             self.SpaceStation1 = Classes.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render, 'SpaceStation1', 'SpaceStation/SpaceStation1_Dif2.png', (-2500, 1000, -100), 40)
-            self.Hero = Classes.Player(self.loader, 'DroneDefender/DroneDefender.x', self.render, 'Player', 'DroneDefender/Drones.jpg', Vec3(0, 0, 0), 50)
+            self.Player = Classes.Player(self.loader, 'Spaceships/Dumbledore.x', self.render, 'Player', 'Spaceships/spacejet_C.png', Vec3(0, 0, 0), 0.5)
 
         SetupScene()
         self.taskMgr.add(self.SpawnDrones, 'SpawnDrones')
@@ -28,7 +28,7 @@ class MyApp(ShowBase):
         unitVec = defensePaths.BaseballSeams(step, numSeams, B = 0.4)
         unitVec.normalize()
         position = unitVec * radius * 250 + centralObject.modelNode.getPos()
-        Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 5)
+        Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
 
     def DrawCloudDefense(self, centralObject, droneName):
         unitVec = defensePaths.Cloud(radius = 1)
