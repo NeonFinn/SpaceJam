@@ -20,6 +20,7 @@ class MyApp(ShowBase):
 
             self.SpaceStation1 = Classes.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render, 'SpaceStation1', 'SpaceStation/SpaceStation1_Dif2.png', (-2500, 1000, -100), 40)
             self.Player = Classes.Player(self.loader, 'Spaceships/Dumbledore.x', self.render, 'Player', 'Spaceships/spacejet_C.png', Vec3(0, 0, 0), 0.5)
+            self.cloudDrones = []
 
         SetupScene()
         self.taskMgr.add(self.SpawnDrones, 'SpawnDrones')
@@ -31,27 +32,31 @@ class MyApp(ShowBase):
         Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
 
     def DrawCloudDefense(self, centralObject, droneName):
-        unitVec = defensePaths.Cloud(radius = 1)
-        unitVec.normalize()
-        position = unitVec * 700 + centralObject.modelNode.getPos()
-        if Classes.Drone.droneCount % 4 == 0:
-            Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
+        maxCloudDrones = 300
 
-    def DrawCircleX(self, centralObject, droneName, radius = 1, numPoints = 100, step = 0):
+        if len(self.cloudDrones) < maxCloudDrones and Classes.Drone.droneCount % 4 == 0:
+            unitVec = defensePaths.Cloud(radius=1)
+            unitVec.normalize()
+            position = unitVec * 700 + centralObject.modelNode.getPos()
+
+            newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
+            self.cloudDrones.append(newDrone)
+
+    def DrawCircleX(self, droneName, radius = 1, numPoints = 100, step = 0):
         points = defensePaths.CircleX(radius, numPoints)
         if step < len(points):
             unitVec = points[step]
             position = unitVec * 300
             Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
 
-    def DrawCircleY(self, centralObject, droneName, radius = 1, numPoints = 100, step = 0):
+    def DrawCircleY(self, droneName, radius = 1, numPoints = 100, step = 0):
         points = defensePaths.CircleY(radius, numPoints)
         if step < len(points):
             unitVec = points[step]
             position = unitVec * 300
             Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
 
-    def DrawCircleZ(self, centralObject, droneName, radius = 1, numPoints = 100, step = 0):
+    def DrawCircleZ(self, droneName, radius = 1, numPoints = 100, step = 0):
         points = defensePaths.CircleZ(radius, numPoints)
         if step < len(points):
             unitVec = points[step]
@@ -67,9 +72,9 @@ class MyApp(ShowBase):
 
         self.DrawCloudDefense(self.Planet4, droneName)
         self.DrawBaseballSeams(self.SpaceStation1, droneName, step, numSeams = 60)
-        self.DrawCircleX(None, droneName, radius = 3, numPoints = 60, step = step)
-        self.DrawCircleY(None, droneName, radius = 3, numPoints = 60, step = step)
-        self.DrawCircleZ(None, droneName, radius = 3, numPoints = 60, step = step)
+        self.DrawCircleX(droneName = droneName, radius = 3, numPoints = 60, step = step)
+        self.DrawCircleY(droneName = droneName, radius = 3, numPoints = 60, step = step)
+        self.DrawCircleZ(droneName = droneName, radius = 3, numPoints = 60, step = step)
 
         return task.cont
 
