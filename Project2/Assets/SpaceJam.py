@@ -47,21 +47,24 @@ class MyApp(ShowBase):
         if step < len(points):
             unitVec = points[step]
             position = unitVec * 300
-            Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
+            newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
+            newDrone.modelNode.setColor(1, 0, 0, 1)
 
     def DrawCircleY(self, droneName, radius = 1, numPoints = 100, step = 0):
         points = defensePaths.CircleY(radius, numPoints)
         if step < len(points):
             unitVec = points[step]
             position = unitVec * 300
-            Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
+            newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
+            newDrone.modelNode.setColor(0, 1, 0, 1)
 
     def DrawCircleZ(self, droneName, radius = 1, numPoints = 100, step = 0):
         points = defensePaths.CircleZ(radius, numPoints)
         if step < len(points):
             unitVec = points[step]
             position = unitVec * 300
-            Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
+            newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
+            newDrone.modelNode.setColor(0, 0, 1, 1)
 
     def SpawnDrones(self, task):
         fullCycle = 60
