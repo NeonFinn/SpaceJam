@@ -8,6 +8,34 @@ class MyApp(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
 
+        self.keyMap = {
+            "forward": False,
+            "turnLeft": False,
+            "turnRight": False,
+            "turnUp": False,
+            "turnDown": False,
+            "rollLeft": False,
+            "rollRight": False,
+        }
+
+        self.accept("space", self.setKey, ["forward", True])
+        self.accept("space-up", self.setKey, ["forward", False])
+        self.accept("a", self.setKey, ["turnLeft", True])
+        self.accept("a-up", self.setKey, ["turnLeft", False])
+        self.accept("d", self.setKey, ["turnRight", True])
+        self.accept("d-up", self.setKey, ["turnRight", False])
+        self.accept("w", self.setKey, ["turnUp", True])
+        self.accept("w-up", self.setKey, ["turnUp", False])
+        self.accept("s", self.setKey, ["turnDown", True])
+        self.accept("s-up", self.setKey, ["turnDown", False])
+        self.accept("q", self.setKey, ["rollLeft", True])
+        self.accept("q-up", self.setKey, ["rollLeft", False])
+        self.accept("e", self.setKey, ["rollRight", True])
+        self.accept("e-up", self.setKey, ["rollRight", False])
+
+        self.taskMgr.add(self.updatePlayer, 'updatePlayerTask')
+        self.taskMgr.add(self.SpawnDrones, 'SpawnDrones')
+
         def SetupScene():
             self.Universe = Classes.Universe(self.loader, 'Universe/Universe.x', self.render, 'Universe', 'Universe/starfield-in-blue.jpg', (0, 0, 0), 10000)
 
@@ -23,7 +51,53 @@ class MyApp(ShowBase):
             self.cloudDrones = []
 
         SetupScene()
-        self.taskMgr.add(self.SpawnDrones, 'SpawnDrones')
+        self.cameraFollow()
+        self.taskMgr.add(self.updateCamera, 'updateCameraTask')
+
+    def setKey(self, key, value):
+        self.keyMap[key] = value
+
+    def updatePlayer(self, task):
+        playerNode = self.Player.modelNode
+        speed = 0.5
+        rotationSpeed = 1
+
+        if self.keyMap["forward"]:
+            playerNode.setPos(playerNode, 0, speed, 0)
+
+        if self.keyMap["turnLeft"]:
+            playerNode.setH(playerNode.getH() + rotationSpeed)
+
+        if self.keyMap["turnRight"]:
+            playerNode.setH(playerNode.getH() - rotationSpeed)
+
+        if self.keyMap["turnUp"]:
+            playerNode.setP(playerNode.getP() + rotationSpeed)
+
+        if self.keyMap["turnDown"]:
+            playerNode.setP(playerNode.getP() - rotationSpeed)
+
+        if self.keyMap["rollLeft"]:
+            playerNode.setR(playerNode.getR() + rotationSpeed)
+
+        if self.keyMap["rollRight"]:
+            playerNode.setR(playerNode.getR() - rotationSpeed)
+
+        return task.cont
+
+    def cameraFollow(self):
+        self.camera.reparentTo(self.Player.modelNode)
+        self.camera.setPos(0, -50, 15)
+        self.camera.setH(self.Player.modelNode.getH())
+        self.camera.setP(0)
+        self.camera.setR(0)
+
+    def updateCamera(self, task):
+        self.camera.setH(self.Player.modelNode.getH())
+        self.camera.setP(0)
+        self.camera.setR(0)
+        self.camera.lookAt(self.Player.modelNode)
+        return task.cont
 
     def DrawBaseballSeams(self, centralObject, droneName, step, numSeams, radius = 1):
         unitVec = defensePaths.BaseballSeams(step, numSeams, B = 0.4)
