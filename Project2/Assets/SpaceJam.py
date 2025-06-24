@@ -4,6 +4,7 @@ from panda3d.core import *
 import Classes as Classes
 import DefensePaths as defensePaths
 
+
 class MyApp(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
@@ -47,7 +48,8 @@ class MyApp(ShowBase):
             self.Planet6 = Classes.Planet(self.loader, 'Planets/protoPlanet.x', self.render, 'Planet6', 'Planets/Venus.jpg', (3000, -900, -1400), 700)
 
             self.SpaceStation1 = Classes.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render, 'SpaceStation1', 'SpaceStation/SpaceStation1_Dif2.png', (-2500, 1000, -100), 40)
-            self.Player = Classes.Player(self.loader, 'Spaceships/Dumbledore.x', self.render, 'Player', 'Spaceships/spacejet_C.png', Vec3(0, 0, 0), 0.5)
+            self.Player = Classes.Player(self.loader, 'Spaceships/Dumbledore.x', self.render, 'Player', 'Spaceships/spacejet_C.png', Vec3(0, 0, 0), 3)
+            self.Player.modelNode.setHpr(0, 90, 0)
             self.cloudDrones = []
 
         SetupScene()
@@ -59,29 +61,29 @@ class MyApp(ShowBase):
 
     def updatePlayer(self, task):
         playerNode = self.Player.modelNode
-        speed = 0.5
-        rotationSpeed = 1
+        speed = 3
+        rotationSpeed = 60 * globalClock.getDt()
 
         if self.keyMap["forward"]:
             playerNode.setPos(playerNode, 0, speed, 0)
 
         if self.keyMap["turnLeft"]:
-            playerNode.setH(playerNode.getH() + rotationSpeed)
+            playerNode.setH(playerNode, rotationSpeed)
 
         if self.keyMap["turnRight"]:
-            playerNode.setH(playerNode.getH() - rotationSpeed)
+            playerNode.setH(playerNode, -rotationSpeed)
 
         if self.keyMap["turnUp"]:
-            playerNode.setP(playerNode.getP() + rotationSpeed)
+            playerNode.setP(playerNode, rotationSpeed)
 
         if self.keyMap["turnDown"]:
-            playerNode.setP(playerNode.getP() - rotationSpeed)
+            playerNode.setP(playerNode, -rotationSpeed)
 
         if self.keyMap["rollLeft"]:
-            playerNode.setR(playerNode.getR() + rotationSpeed)
+            playerNode.setR(playerNode, rotationSpeed)
 
         if self.keyMap["rollRight"]:
-            playerNode.setR(playerNode.getR() - rotationSpeed)
+            playerNode.setR(playerNode, -rotationSpeed)
 
         return task.cont
 
@@ -116,7 +118,7 @@ class MyApp(ShowBase):
             newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
             self.cloudDrones.append(newDrone)
 
-    def DrawCircleX(self, droneName, radius = 1, numPoints = 100, step = 0):
+    def DrawCircleX(self, droneName, radius = 1, numPoints = 100, step = 50):
         points = defensePaths.CircleX(radius, numPoints)
         if step < len(points):
             unitVec = points[step]
@@ -124,7 +126,7 @@ class MyApp(ShowBase):
             newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 8)
             newDrone.modelNode.setColor(1, 0, 0, 1)
 
-    def DrawCircleY(self, droneName, radius = 1, numPoints = 100, step = 0):
+    def DrawCircleY(self, droneName, radius = 1, numPoints = 100, step = 50):
         points = defensePaths.CircleY(radius, numPoints)
         if step < len(points):
             unitVec = points[step]
@@ -132,7 +134,7 @@ class MyApp(ShowBase):
             newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 8)
             newDrone.modelNode.setColor(0, 1, 0, 1)
 
-    def DrawCircleZ(self, droneName, radius = 1, numPoints = 100, step = 0):
+    def DrawCircleZ(self, droneName, radius = 1, numPoints = 100, step = 50):
         points = defensePaths.CircleZ(radius, numPoints)
         if step < len(points):
             unitVec = points[step]
