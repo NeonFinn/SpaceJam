@@ -96,6 +96,7 @@ class MyApp(ShowBase):
         self.camera.setP(0)
         self.camera.setR(0)
         self.camera.lookAt(self.Player.modelNode)
+
         return task.cont
 
     def DrawBaseballSeams(self, centralObject, droneName, step, numSeams, radius = 1):
