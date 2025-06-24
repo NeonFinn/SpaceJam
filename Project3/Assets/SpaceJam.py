@@ -89,10 +89,7 @@ class MyApp(ShowBase):
 
     def cameraFollow(self):
         self.camera.reparentTo(self.Player.modelNode)
-        self.camera.setPos(0, -50, 15)
         self.camera.setH(self.Player.modelNode.getH())
-        self.camera.setP(0)
-        self.camera.setR(0)
 
     def updateCamera(self, task):
         self.camera.setH(self.Player.modelNode.getH())
