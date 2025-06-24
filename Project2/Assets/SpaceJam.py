@@ -1,4 +1,5 @@
 from direct.showbase.ShowBase import ShowBase
+from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import *
 
 import Classes as Classes
@@ -61,7 +62,7 @@ class MyApp(ShowBase):
 
     def updatePlayer(self, task):
         playerNode = self.Player.modelNode
-        speed = 3
+        speed = 1
         rotationSpeed = 60 * globalClock.getDt()
 
         if self.keyMap["forward"]:
