@@ -49,7 +49,11 @@ class MyApp(ShowBase):
 
             self.SpaceStation1 = Classes.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render, 'SpaceStation1', 'SpaceStation/SpaceStation1_Dif2.png', (-2500, 1000, -100), 40)
             self.Player = Classes.Player(self.loader, 'Spaceships/Dumbledore.x', self.render, 'Player', 'Spaceships/spacejet_C.png', Vec3(0, 0, 0), 3)
+
+            self.Player.modelNode.reparentTo(self.render)
             self.Player.modelNode.setHpr(0, 90, 0)
+            self.Player.modelNode.setPos(0, 5, 0)
+
             self.cloudDrones = []
 
         SetupScene()
@@ -60,43 +64,44 @@ class MyApp(ShowBase):
         self.keyMap[key] = value
 
     def updatePlayer(self, task):
+        dt = globalClock.getDt()
         playerNode = self.Player.modelNode
-        speed = 1
-        rotationSpeed = 60 * globalClock.getDt()
+        speed = 100 * dt
+        rotationSpeed = 90 * dt
 
+        # Movement (using negative Z-axis)
         if self.keyMap["forward"]:
-            playerNode.setPos(playerNode, 0, speed, 0)
+            move_vector = -playerNode.getQuat().getUp() * speed
+            playerNode.setPos(playerNode.getPos() + move_vector)
 
-        if self.keyMap["turnLeft"]:
-            playerNode.setH(playerNode, rotationSpeed)
-
-        if self.keyMap["turnRight"]:
-            playerNode.setH(playerNode, -rotationSpeed)
-
-        if self.keyMap["turnUp"]:
-            playerNode.setP(playerNode, rotationSpeed)
-
-        if self.keyMap["turnDown"]:
-            playerNode.setP(playerNode, -rotationSpeed)
-
-        if self.keyMap["rollLeft"]:
-            playerNode.setR(playerNode, rotationSpeed)
-
-        if self.keyMap["rollRight"]:
-            playerNode.setR(playerNode, -rotationSpeed)
+        # CORRECTED ROTATION CONTROLS:
+        if self.keyMap["turnLeft"]:  # Yaw left (rotate around Y-axis)
+            playerNode.setHpr(playerNode.getH() + rotationSpeed, playerNode.getP(), playerNode.getR())
+        if self.keyMap["turnRight"]:  # Yaw right (rotate around Y-axis)
+            playerNode.setHpr(playerNode.getH() - rotationSpeed, playerNode.getP(), playerNode.getR())
+        if self.keyMap["turnUp"]:  # Pitch up (rotate around X-axis)
+            playerNode.setHpr(playerNode.getH(), playerNode.getP() + rotationSpeed, playerNode.getR())
+        if self.keyMap["turnDown"]:  # Pitch down (rotate around X-axis)
+            playerNode.setHpr(playerNode.getH(), playerNode.getP() - rotationSpeed, playerNode.getR())
+        if self.keyMap["rollLeft"]:  # Roll left (rotate around Z-axis)
+            playerNode.setHpr(playerNode.getH(), playerNode.getP(), playerNode.getR() + rotationSpeed)
+        if self.keyMap["rollRight"]:  # Roll right (rotate around Z-axis)
+            playerNode.setHpr(playerNode.getH(), playerNode.getP(), playerNode.getR() - rotationSpeed)
 
         return task.cont
 
     def cameraFollow(self):
-        self.camera.reparentTo(self.Player.modelNode)
-        self.camera.setH(self.Player.modelNode.getH())
-
-    def updateCamera(self, task):
-        self.camera.setH(self.Player.modelNode.getH())
-        self.camera.setP(0)
-        self.camera.setR(0)
+        # Parent camera to render (world)
+        self.camera.reparentTo(self.render)
+        # Position camera behind player, offset by 20 units back and 6 units up
+        pos = self.Player.modelNode.getPos()
+        self.camera.setPos(pos.x, pos.y - 20, pos.z + 6)
         self.camera.lookAt(self.Player.modelNode)
 
+    def updateCamera(self, task):
+        pos = self.Player.modelNode.getPos()
+        self.camera.setPos(pos.x, pos.y - 20, pos.z + 6)
+        self.camera.lookAt(self.Player.modelNode)
         return task.cont
 
     def DrawBaseballSeams(self, centralObject, droneName, step, numSeams, radius = 1):
