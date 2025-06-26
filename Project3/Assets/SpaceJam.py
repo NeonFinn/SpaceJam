@@ -1,5 +1,4 @@
 from direct.showbase.ShowBase import ShowBase
-from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import *
 
 import Classes as Classes
@@ -8,34 +7,6 @@ import DefensePaths as defensePaths
 class MyApp(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
-
-        self.keyMap = {
-            "forward": False,
-            "turnLeft": False,
-            "turnRight": False,
-            "turnUp": False,
-            "turnDown": False,
-            "rollLeft": False,
-            "rollRight": False,
-        }
-
-        self.accept("space", self.setKey, ["forward", True])
-        self.accept("space-up", self.setKey, ["forward", False])
-        self.accept("a", self.setKey, ["turnLeft", True])
-        self.accept("a-up", self.setKey, ["turnLeft", False])
-        self.accept("d", self.setKey, ["turnRight", True])
-        self.accept("d-up", self.setKey, ["turnRight", False])
-        self.accept("w", self.setKey, ["turnUp", True])
-        self.accept("w-up", self.setKey, ["turnUp", False])
-        self.accept("s", self.setKey, ["turnDown", True])
-        self.accept("s-up", self.setKey, ["turnDown", False])
-        self.accept("q", self.setKey, ["rollLeft", True])
-        self.accept("q-up", self.setKey, ["rollLeft", False])
-        self.accept("e", self.setKey, ["rollRight", True])
-        self.accept("e-up", self.setKey, ["rollRight", False])
-
-        self.taskMgr.add(self.updatePlayer, 'updatePlayerTask')
-        self.taskMgr.add(self.SpawnDrones, 'SpawnDrones')
 
         def SetupScene():
             self.Universe = Classes.Universe(self.loader, 'Universe/Universe.x', self.render, 'Universe', 'Universe/starfield-in-blue.jpg', (0, 0, 0), 10000)
@@ -48,47 +19,19 @@ class MyApp(ShowBase):
             self.Planet6 = Classes.Planet(self.loader, 'Planets/protoPlanet.x', self.render, 'Planet6', 'Planets/Venus.jpg', (3000, -900, -1400), 700)
 
             self.SpaceStation1 = Classes.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render, 'SpaceStation1', 'SpaceStation/SpaceStation1_Dif2.png', (-2500, 1000, -100), 40)
-            self.Player = Classes.Player(self.loader, 'Spaceships/Dumbledore.x', self.render, 'Player', 'Spaceships/spacejet_C.png', Vec3(0, 0, 0), 3)
+            self.Player = Classes.Player(self.loader, 'Spaceships/Dumbledore.x', self.render, 'Player', 'Spaceships/spacejet_C.png', Vec3(0, 0, 0), 3, self)
+
             self.Player.modelNode.setHpr(0, 0, 0)
             self.cloudDrones = []
 
         SetupScene()
-        self.cameraFollow()
+        self.taskMgr.add(self.SpawnDrones, 'SpawnDronesTask')
+        self.setCamera()
 
-    def updatePlayer(self, task):
-        playerNode = self.Player.modelNode
-        speed = 1
-        rotationSpeed = 60 * globalClock.getDt()
-
-        if self.keyMap["forward"]:
-            playerNode.setPos(playerNode, 0, speed, 0)
-
-        if self.keyMap["turnLeft"]:
-            playerNode.setH(playerNode, rotationSpeed)
-
-        if self.keyMap["turnRight"]:
-            playerNode.setH(playerNode, -rotationSpeed)
-
-        if self.keyMap["turnUp"]:
-            playerNode.setP(playerNode, rotationSpeed)
-
-        if self.keyMap["turnDown"]:
-            playerNode.setP(playerNode, -rotationSpeed)
-
-        if self.keyMap["rollLeft"]:
-            playerNode.setR(playerNode, rotationSpeed)
-
-        if self.keyMap["rollRight"]:
-            playerNode.setR(playerNode, -rotationSpeed)
-
-        return task.cont
-
-    def cameraFollow(self):
+    def setCamera(self):
+        self.disable_mouse()
         self.camera.reparentTo(self.Player.modelNode)
-        self.camera.setH(self.Player.modelNode.getH())
-
-    def setKey(self, key, value):
-        self.keyMap[key] = value
+        self.camera.setFluidPos(0, 0, 0)
 
     def DrawBaseballSeams(self, centralObject, droneName, step, numSeams, radius = 1):
         unitVec = defensePaths.BaseballSeams(step, numSeams, B = 0.4)
@@ -135,18 +78,25 @@ class MyApp(ShowBase):
         fullCycle = 60
         step = task.frame % fullCycle
 
-        if task.frame % 4 == 0:
+        if task.frame == 0:
+            for i in range(60):
+                name = f'DroneX_{i}'
+                self.DrawCircleX(droneName=name, radius=3, numPoints=60, step=i)
 
+                name = f'DroneY_{i}'
+                self.DrawCircleY(droneName=name, radius=3, numPoints=60, step=i)
+
+                name = f'DroneZ_{i}'
+                self.DrawCircleZ(droneName=name, radius=3, numPoints=60, step=i)
+
+        if task.frame % 2 == 0:
             Classes.Drone.droneCount += 1
             droneName = f'Drone{Classes.Drone.droneCount}'
-
+            self.DrawBaseballSeams(self.SpaceStation1, droneName, step, numSeams=60)
+        elif task.frame % 5 == 0:
+            Classes.Drone.droneCount += 1
+            droneName = f'Drone{Classes.Drone.droneCount}'
             self.DrawCloudDefense(self.Planet4, droneName)
-            self.DrawBaseballSeams(self.SpaceStation1, droneName, step, numSeams = 60)
-
-
-            self.DrawCircleX(droneName = droneName, radius = 3, numPoints = 60, step = step)
-            self.DrawCircleY(droneName = droneName, radius = 3, numPoints = 60, step = step)
-            self.DrawCircleZ(droneName = droneName, radius = 3, numPoints = 60, step = step)
 
         return task.cont
 
