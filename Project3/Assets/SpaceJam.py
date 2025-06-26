@@ -54,10 +54,6 @@ class MyApp(ShowBase):
 
         SetupScene()
         self.cameraFollow()
-        self.taskMgr.add(self.updateCamera, 'updateCameraTask')
-
-    def setKey(self, key, value):
-        self.keyMap[key] = value
 
     def updatePlayer(self, task):
         playerNode = self.Player.modelNode
@@ -91,13 +87,8 @@ class MyApp(ShowBase):
         self.camera.reparentTo(self.Player.modelNode)
         self.camera.setH(self.Player.modelNode.getH())
 
-    def updateCamera(self, task):
-        self.camera.setH(self.Player.modelNode.getH())
-        self.camera.setP(0)
-        self.camera.setR(0)
-        self.camera.lookAt(self.Player.modelNode)
-
-        return task.cont
+    def setKey(self, key, value):
+        self.keyMap[key] = value
 
     def DrawBaseballSeams(self, centralObject, droneName, step, numSeams, radius = 1):
         unitVec = defensePaths.BaseballSeams(step, numSeams, B = 0.4)
