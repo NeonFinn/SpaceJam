@@ -5,6 +5,7 @@ from panda3d.core import CollisionTraverser, CollisionHandlerPusher
 import Classes as Classes
 import DefensePaths as defensePaths
 import CollideObjectBase
+import Player as Player
 
 class MyApp(ShowBase):
     def __init__(self):
@@ -21,7 +22,8 @@ class MyApp(ShowBase):
             self.Planet6 = Classes.Planet(self.loader, 'Planets/protoPlanet.x', self.render, 'Planet6', 'Planets/Venus.jpg', (3000, -900, -1400), 700)
 
             self.SpaceStation1 = Classes.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render, 'SpaceStation1', 'SpaceStation/SpaceStation1_Dif2.png', (-2500, 1000, -100), 40)
-            self.Player = Classes.Player(self.loader, 'Spaceships/Dumbledore.x', self.render, 'Player', 'Spaceships/spacejet_C.png', Vec3(0, 0, 0), 3, self)
+            self.Player = Player.Player(self.loader, self.taskMgr, self.accept, 'Spaceships/Dumbledore.x', self.render, 'Player', 'Spaceships/spacejet_C.png', Vec3(0, 0, 0), 3, self)
+
 
             self.cTrav = CollisionTraverser()
             self.cTrav.traverse(self.render)
