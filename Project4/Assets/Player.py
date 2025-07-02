@@ -3,9 +3,13 @@ from panda3d.core import Loader, NodePath, Vec3
 from direct.task.Task import TaskManager
 from typing import Callable
 from direct.task import Task
+from panda3d.core import CollisionNode, CollisionSphere
+
 
 class player:
-    def __init__(self, loader: Loader, taskMgr: TaskManager, accept: Callable {(str, Callable), None}, modelPath: str, parentNode: NodePath, nodeName: str, texPath: str, posVec: Vec3, scaleVec: float):
+    def __init__(self, loader: Loader, taskMgr: TaskManager, accept: Callable, modelPath: str, parentNode: NodePath,
+                 nodeName: str, texPath: str, posVec: Vec3, scaleVec: float, base):
+
         self.modelNode = loader.loadModel(modelPath)
         self.modelNode.reparentTo(parentNode)
         self.modelNode.setPos(posVec)
@@ -72,7 +76,7 @@ class player:
         return Task.cont
 
     def applyThrust(self):
-        rate = 3
+        rate = 5
         trajectory = self.base.render.getRelativeVector(self.modelNode, Vec3(0, 1, 0))  # Forward is Y
         trajectory.normalize()
         self.modelNode.setFluidPos(self.modelNode.getPos() + trajectory * rate)

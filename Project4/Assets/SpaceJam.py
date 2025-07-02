@@ -12,24 +12,48 @@ class MyApp(ShowBase):
         ShowBase.__init__(self)
 
         def SetupScene():
-            self.Universe = Classes.Universe(self.loader, 'Universe/Universe.x', self.render, 'Universe', 'Universe/starfield-in-blue.jpg', (0, 0, 0), 10000)
+            self.Universe = Classes.Universe(self.loader, 'Universe/Universe.x', self.render, 'Universe',
+                                             'Universe/starfield-in-blue.jpg', Vec3(0, 0, 0), 10000)
 
-            self.Planet1 = Classes.Planet(self.loader, 'Planets/protoPlanet.x', self.render, 'Planet1', 'Planets/Jupiter.jpg', (-6000, -3000, -800), 250)
-            self.Planet2 = Classes.Planet(self.loader, 'Planets/protoPlanet.x', self.render, 'Planet2', 'Planets/Mars.jpg', (800, 6000, 0), 300)
-            self.Planet3 = Classes.Planet(self.loader, 'Planets/protoPlanet.x', self.render, 'Planet3', 'Planets/Mercury.jpg', (500, -5000, 1000), 500)
-            self.Planet4 = Classes.Planet(self.loader, 'Planets/protoPlanet.x', self.render, 'Planet4', 'Planets/Neptune.jpg', (-1200, 6000, 500), 150)
-            self.Planet5 = Classes.Planet(self.loader, 'Planets/protoPlanet.x', self.render, 'Planet5', 'Planets/Uranus.jpg', (-2000, -2000, 3000), 500)
-            self.Planet6 = Classes.Planet(self.loader, 'Planets/protoPlanet.x', self.render, 'Planet6', 'Planets/Venus.jpg', (3000, -900, -1400), 700)
+            self.Planet1 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,
+                                                                 'Planet1',
+                                                                 'Planets/Jupiter.jpg', (-6000, -3000, -800), 250)
+            self.Planet2 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,
+                                                                 'Planet2',
+                                                                 'Planets/Mars.jpg', (800, 6000, 0), 300)
+            self.Planet3 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,
+                                                                 'Planet3',
+                                                                 'Planets/Mercury.jpg', (5500, -5000, 1000), 500)
+            self.Planet4 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,
+                                                                 'Planet4',
+                                                                 'Planets/Neptune.jpg', (-1200, 6000, 500), 150)
+            self.Planet5 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,
+                                                                 'Planet5',
+                                                                 'Planets/Uranus.jpg', (-5000, 3000, -4000), 500)
+            self.Planet6 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,
+                                                                 'Planet6',
+                                                                 'Planets/Venus.jpg', (4000, -1300, -1400), 300)
 
-            self.SpaceStation1 = Classes.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render, 'SpaceStation1', 'SpaceStation/SpaceStation1_Dif2.png', (-2500, 1000, -100), 40)
-            self.Player = Player.Player(self.loader, self.taskMgr, self.accept, 'Spaceships/Dumbledore.x', self.render, 'Player', 'Spaceships/spacejet_C.png', Vec3(0, 0, 0), 3, self)
+            self.SpaceStation1 = Classes.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render,
+                                                      'SpaceStation1',
+                                                      'SpaceStation/SpaceStation1_Dif2.png', (-2500, 1000, -100),
+                                                      30)
 
+            self.Player = Player.player(self.loader, self.taskMgr, self.accept, 'Spaceships/Dumbledore.x', self.render,
+                                        'Player', 'Spaceships/spacejet_C.png', (0, 0, 0), 3.0, self)
 
             self.cTrav = CollisionTraverser()
-            self.cTrav.traverse(self.render)
             self.pusher = CollisionHandlerPusher()
+
             self.pusher.addCollider(self.Player.collisionNode, self.Player.modelNode)
             self.cTrav.addCollider(self.Player.collisionNode, self.pusher)
+
+            for planet in [self.Planet1, self.Planet2, self.Planet3, self.Planet4, self.Planet5, self.Planet6]:
+                self.pusher.addCollider(planet.collisionNode, planet.modelNode)
+                self.cTrav.addCollider(planet.collisionNode, self.pusher)
+
+            self.cTrav.addCollider(self.Universe.collisionNode, self.pusher)
+
             self.cTrav.showCollisions(self.render)
 
             self.Player.modelNode.setHpr(0, 0, 0)
