@@ -57,7 +57,7 @@ class player:
         self.base.accept("e-up", self.setKey, ["rollRight", False])
 
     def updatePlayer(self, task):
-        rate = 0.5
+        rate = 0.25
         if self.keys["turnLeft"]:
             self.modelNode.setH(self.modelNode.getH() + rate)
         if self.keys["turnRight"]:
@@ -76,7 +76,7 @@ class player:
         return Task.cont
 
     def applyThrust(self):
-        rate = 5
+        rate = 2
         trajectory = self.base.render.getRelativeVector(self.modelNode, Vec3(0, 1, 0))  # Forward is Y
         trajectory.normalize()
         self.modelNode.setFluidPos(self.modelNode.getPos() + trajectory * rate)

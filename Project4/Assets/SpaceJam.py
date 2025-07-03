@@ -15,32 +15,24 @@ class MyApp(ShowBase):
             self.Universe = Classes.Universe(self.loader, 'Universe/Universe.x', self.render, 'Universe',
                                              'Universe/starfield-in-blue.jpg', Vec3(0, 0, 0), 10000)
 
-            self.Planet1 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,
-                                                                 'Planet1',
-                                                                 'Planets/Jupiter.jpg', (-6000, -3000, -800), 250)
-            self.Planet2 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,
-                                                                 'Planet2',
-                                                                 'Planets/Mars.jpg', (800, 6000, 0), 300)
-            self.Planet3 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,
-                                                                 'Planet3',
-                                                                 'Planets/Mercury.jpg', (5500, -5000, 1000), 500)
-            self.Planet4 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,
-                                                                 'Planet4',
-                                                                 'Planets/Neptune.jpg', (-1200, 6000, 500), 150)
-            self.Planet5 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,
-                                                                 'Planet5',
-                                                                 'Planets/Uranus.jpg', (-5000, 3000, -4000), 500)
-            self.Planet6 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,
-                                                                 'Planet6',
-                                                                 'Planets/Venus.jpg', (4000, -1300, -1400), 300)
+            self.Planet1 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet1',
+                'Planets/Jupiter.jpg', (-6000, -3000, -800), 250)
+            self.Planet2 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet2',
+                'Planets/Mars.jpg', (800, 6000, 0), 300)
+            self.Planet3 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet3',
+                'Planets/Mercury.jpg', (5500, -5000, 1000), 500)
+            self.Planet4 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet4',
+                'Planets/Neptune.jpg', (-1200, 6000, 500), 150)
+            self.Planet5 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet5',
+                'Planets/Uranus.jpg', (-5000, 3000, -4000), 500)
+            self.Planet6 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet6',
+                'Planets/Venus.jpg', (4000, -1300, -1400), 300)
 
-            self.SpaceStation1 = Classes.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render,
-                                                      'SpaceStation1',
-                                                      'SpaceStation/SpaceStation1_Dif2.png', (-2500, 1000, -100),
-                                                      30)
+            self.SpaceStation1 = Classes.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render,'SpaceStation1',
+                'SpaceStation/SpaceStation1_Dif2.png', (-2500, 1000, -100),30)
 
             self.Player = Player.player(self.loader, self.taskMgr, self.accept, 'Spaceships/Dumbledore.x', self.render,
-                                        'Player', 'Spaceships/spacejet_C.png', (0, 0, 0), 3.0, self)
+                'Player', 'Spaceships/spacejet_C.png', (0, 0, 0), 3.0, self)
 
             self.cTrav = CollisionTraverser()
             self.pusher = CollisionHandlerPusher()
