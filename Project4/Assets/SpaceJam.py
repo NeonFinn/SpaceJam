@@ -44,8 +44,6 @@ class MyApp(ShowBase):
                 self.pusher.addCollider(planet.collisionNode, planet.modelNode)
                 self.cTrav.addCollider(planet.collisionNode, self.pusher)
 
-            self.cTrav.addCollider(self.Universe.collisionNode, self.pusher)
-
             self.cTrav.showCollisions(self.render)
 
             self.Player.modelNode.setHpr(0, 0, 0)
