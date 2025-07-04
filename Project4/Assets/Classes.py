@@ -16,19 +16,27 @@ class Planet(ShowBase):
         self.modelNode.setTexture(tex, 1)
 
         self.collisionNode.node().clearSolids()
-        self.collisionNode.node().addSolid(CollisionSphere(0,0,0, 1))
+        self.collisionNode.node().addSolid(CollisionSphere(0,0,0, 1.25))
+        self.collisionNode.show()
 
 class Drone(ShowBase):
     droneCount = 0
-    def __init__(self, loader: Loader, modelPath: str, parentNode: NodePath, nodeName: str, texPath:str, posVec: Vec3, scaleVec: float):
+
+    def __init__(self, loader: Loader, modelPath: str, parentNode: NodePath, nodeName: str, texPath: str, posVec: Vec3, scaleVec: float):
         self.modelNode = loader.loadModel(modelPath)
         self.modelNode.reparentTo(parentNode)
         self.modelNode.setPos(posVec)
         self.modelNode.setScale(scaleVec)
-
         self.modelNode.setName(nodeName)
+
         tex = loader.loadTexture(texPath)
         self.modelNode.setTexture(tex, 1)
+
+        self.collisionNode = self.modelNode.attachNewNode(CollisionNode(nodeName + '_cNode'))
+        self.collisionNode.node().addSolid(CollisionSphere(0, 0, 0, 5))
+        self.collisionNode.show()
+
+        Drone.droneCount += 1
 
 class SpaceStation(CapsuleCollideObject):
     def __init__(self, loader: Loader, modelPath: str, parentNode: NodePath, nodeName: str,

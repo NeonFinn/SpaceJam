@@ -16,17 +16,17 @@ class MyApp(ShowBase):
                                              'Universe/starfield-in-blue.jpg', Vec3(0, 0, 0), 10000)
 
             self.Planet1 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet1',
-                'Planets/Jupiter.jpg', (-6000, -3000, -800), 250)
+                'Planets/Jupiter.jpg', (-6000, -3000, -800), 250, colRadius= 1.1)
             self.Planet2 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet2',
-                'Planets/Mars.jpg', (800, 6000, 0), 300)
+                'Planets/Mars.jpg', (800, 6000, 0), 300, colRadius= 1.1)
             self.Planet3 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet3',
-                'Planets/Mercury.jpg', (5500, -5000, 1000), 500)
+                'Planets/Mercury.jpg', (5500, -5000, 1000), 500, colRadius= 1.1)
             self.Planet4 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet4',
-                'Planets/Neptune.jpg', (-1200, 6000, 500), 150)
+                'Planets/Neptune.jpg', (-1200, 6000, 500), 150, colRadius= 1.1)
             self.Planet5 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet5',
-                'Planets/Uranus.jpg', (-5000, 3000, -4000), 500)
+                'Planets/Uranus.jpg', (-5000, 3000, -4000), 500, colRadius= 1.1)
             self.Planet6 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet6',
-                'Planets/Venus.jpg', (4000, -1300, -1400), 300)
+                'Planets/Venus.jpg', (4000, -1300, -1400), 300, colRadius= 1.1)
 
             self.SpaceStation1 = Classes.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render,'SpaceStation1',
                 'SpaceStation/SpaceStation1_Dif2.png', (-2500, 1000, -100),30)
@@ -44,8 +44,6 @@ class MyApp(ShowBase):
                 self.pusher.addCollider(planet.collisionNode, planet.modelNode)
                 self.cTrav.addCollider(planet.collisionNode, self.pusher)
 
-            self.cTrav.showCollisions(self.render)
-
             self.Player.modelNode.setHpr(0, 0, 0)
             self.cloudDrones = []
 
@@ -62,66 +60,87 @@ class MyApp(ShowBase):
         unitVec = defensePaths.BaseballSeams(step, numSeams, B = 0.4)
         unitVec.normalize()
         position = unitVec * radius * 250 + centralObject.modelNode.getPos()
-        Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 5)
+
+        drone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
+                              droneName, 'DroneDefender/Drones.jpg', position, 5)
+        self.cloudDrones.append(drone)
 
     def DrawCloudDefense(self, centralObject, droneName):
-        maxCloudDrones = 300
+        unitVec = defensePaths.Cloud(radius=1)
+        unitVec.normalize()
+        position = unitVec * 700 + centralObject.modelNode.getPos()
 
-        if len(self.cloudDrones) < maxCloudDrones and Classes.Drone.droneCount % 4 == 0:
-            unitVec = defensePaths.Cloud(radius=1)
-            unitVec.normalize()
-            position = unitVec * 700 + centralObject.modelNode.getPos()
-
-            newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 10)
-            self.cloudDrones.append(newDrone)
+        drone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
+                              droneName, 'DroneDefender/Drones.jpg', position, 5)
+        self.cloudDrones.append(drone)
 
     def DrawCircleX(self, droneName, radius = 1, numPoints = 100, step = 50):
         points = defensePaths.CircleX(radius, numPoints)
         if step < len(points):
             unitVec = points[step]
             position = unitVec * 300
-            newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 8)
-            newDrone.modelNode.setColor(1, 0, 0, 1)
+
+            drone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
+                                  droneName, 'DroneDefender/Drones.jpg', position, 5)
+            self.cloudDrones.append(drone)
+
 
     def DrawCircleY(self, droneName, radius = 1, numPoints = 100, step = 50):
         points = defensePaths.CircleY(radius, numPoints)
         if step < len(points):
             unitVec = points[step]
             position = unitVec * 300
-            newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 8)
-            newDrone.modelNode.setColor(0, 1, 0, 1)
+
+            drone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
+                                  droneName, 'DroneDefender/Drones.jpg', position, 5)
+            self.cloudDrones.append(drone)
+
 
     def DrawCircleZ(self, droneName, radius = 1, numPoints = 100, step = 50):
         points = defensePaths.CircleZ(radius, numPoints)
         if step < len(points):
             unitVec = points[step]
             position = unitVec * 300
-            newDrone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render, droneName, 'DroneDefender/Drones.jpg', position, 8)
-            newDrone.modelNode.setColor(0, 0, 1, 1)
+
+            drone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
+                                  droneName, 'DroneDefender/Drones.jpg', position, 5)
+            self.cloudDrones.append(drone)
 
     def SpawnDrones(self, task):
-        fullCycle = 60
-        step = task.frame % fullCycle
 
         if task.frame == 0:
             for i in range(60):
-                name = f'DroneX_{i}'
-                self.DrawCircleX(droneName=name, radius=3, numPoints=60, step=i)
+                self.DrawCircleX(droneName=f'DroneX_{i}', radius=3, numPoints=60, step=i)
+                self.cloudDrones[-1].modelNode.setColor(1, 0, 0, 1)
 
-                name = f'DroneY_{i}'
-                self.DrawCircleY(droneName=name, radius=3, numPoints=60, step=i)
+                self.DrawCircleY(droneName=f'DroneY_{i}', radius=3, numPoints=60, step=i)
+                self.cloudDrones[-1].modelNode.setColor(0, 1, 0, 1)
 
-                name = f'DroneZ_{i}'
-                self.DrawCircleZ(droneName=name, radius=3, numPoints=60, step=i)
+                self.DrawCircleZ(droneName=f'DroneZ_{i}', radius=3, numPoints=60, step=i)
+                self.cloudDrones[-1].modelNode.setColor(0, 0, 1, 1)
 
-        if task.frame % 2 == 0:
+            for i in range(60):
+                droneName = f'BaseballSeam_{i}'
+                self.DrawBaseballSeams(self.SpaceStation1, droneName, i, numSeams=60)
+
+        maxCloudDrones = 400
+        if len(self.cloudDrones) >= maxCloudDrones:
+            return task.cont
+
+        while len(self.cloudDrones) < maxCloudDrones:
             Classes.Drone.droneCount += 1
             droneName = f'Drone{Classes.Drone.droneCount}'
-            self.DrawBaseballSeams(self.SpaceStation1, droneName, step, numSeams=60)
-        elif task.frame % 5 == 0:
-            Classes.Drone.droneCount += 1
-            droneName = f'Drone{Classes.Drone.droneCount}'
-            self.DrawCloudDefense(self.Planet4, droneName)
+
+            unitVec = defensePaths.Cloud(radius=1)
+            unitVec.normalize()
+            position = unitVec * 350 + self.Planet4.modelNode.getPos()
+
+            drone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
+                          droneName, 'DroneDefender/Drones.jpg', position, 5)
+
+            self.cloudDrones.append(drone)
+            self.pusher.addCollider(drone.collisionNode, drone.modelNode)
+            self.cTrav.addCollider(drone.collisionNode, self.pusher)
 
         return task.cont
 
