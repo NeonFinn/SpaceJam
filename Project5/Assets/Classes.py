@@ -56,11 +56,28 @@ class Universe(InverseSphereCollideObject):
         tex = loader.loadTexture(texPath)
         self.modelNode.setTexture(tex, 1)
 
-class Missile(CapsuleCollideObject):
-    def __init__(self, loader: Loader, modelPath: str, parentNode: NodePath, nodeName: str,
-                 texPath: str, posVec: Vec3, scaleVec: float):
-        super().__init__(loader, modelPath, parentNode, nodeName, 1, -1, 5, 1, -1, -5, 10)
+class Missile(SphereCollideObject):
+    def __init__(self, loader: Loader, modelPath: str, parentNode: NodePath, nodeName: str, posVec: Vec3, scaleVec: float = 1.0):
+        super(Missile, self).__init__(loader, modelPath, parentNode, nodeName, Vec3(0, 0, 0), 3.0)
+
+        self.modelNode.setScale(scaleVec)
+        self.modelNode.setPos(posVec)
 
         self.reloadTime = 0.25
         self.missileDistance = 4000
         self.missileBay = 1
+
+        fireModels = {}
+        cNodes = {}
+        collisionSolids = {}
+        intervals = {}
+
+        missileCount = 0
+
+        Missile.firemodels[nodeName] = self.modelNode
+        Missile.cNodes[nodeName] = self.collisionNode
+
+        Missile.collisionSolids[nodeName] = self.collisionNode.node().getSolid(0)
+        Missile.cNodes[nodeName].show()
+
+        print("Fire torpedo #" + str(Missile.missileCount))

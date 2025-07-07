@@ -144,14 +144,6 @@ class MyApp(ShowBase):
 
         return task.cont
 
-    def fireMissile(self):
-        if self.Classes.missileBay:
-            aim = self.render.getRelativeVector(self.modelNode, Vec3.forward())
-            aim.normalize()
-
-            fireSolution = aim * self.missileDistance
-            inFront = aim * 150
-
 
 
 app = MyApp() # create instance of MyApp

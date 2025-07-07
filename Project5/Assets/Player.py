@@ -4,6 +4,8 @@ from direct.task.Task import TaskManager
 from typing import Callable
 from direct.task import Task
 from panda3d.core import CollisionNode, CollisionSphere
+from Project5.Assets import Classes
+
 
 class player:
     def __init__(self, loader: Loader, taskMgr: TaskManager, accept: Callable, modelPath: str, parentNode: NodePath,
@@ -30,7 +32,7 @@ class player:
             "turnDown": False,
             "turnUp": False,
             "rollLeft": False,
-            "rollRight": False
+            "rollRight": False,
             "fire": False
         }
 
@@ -83,3 +85,25 @@ class player:
         trajectory = self.base.render.getRelativeVector(self.modelNode, Vec3(0, 1, 0))  # Forward is Y
         trajectory.normalize()
         self.modelNode.setFluidPos(self.modelNode.getPos() + trajectory * rate)
+
+    def fireMissile(self):
+        if Classes.Missile.missileBay > 0:
+            aim = self.base.render.getRelativeVector(self.modelNode, Vec3.forward())
+            aim.normalize()
+
+            fireSolution = aim * Classes.Missile.missileDistance
+            inFront = aim * 150
+
+            travVec = fireSolution + self.modelNode.getPos()
+            Classes.Missile.missileBay -= 1
+            tag = 'Missile' + str(Classes.Missile.missileCount)
+            Classes.Missile.missileCount += 1
+
+            posVec = self.modelNode.getPos() + inFront
+            currentMissile = Classes.Missile(self.base.loader, 'Phaser/phaser.egg', self.base.render,
+                                             tag, posVec, 4.0)
+
+            Classes.Missile.intervals[tag] = currentMissile.modelNode.posInterval(
+                2.0, travVec, startPos=posVec, fluid=1)
+
+            Classes.Missile.intervals[tag].start()
