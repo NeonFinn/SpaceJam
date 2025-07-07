@@ -32,8 +32,10 @@ class SphereCollideObject(CollideableObject):
         self.collisionNode.node().addSolid(CollisionSphere(colPosVec, colRadius))
         self.collisionNode.show()
 
-        tex = loader.loadTexture(texPath)
-        self.modelNode.setTexture(tex, 1)
+        if isinstance(texPath, str):
+            tex = loader.loadTexture(texPath)
+            self.modelNode.setTexture(tex, 1)
+
         self.modelNode.setPos(posVec)
         self.modelNode.setScale(scale)
 
