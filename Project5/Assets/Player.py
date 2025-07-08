@@ -99,7 +99,7 @@ class player:
 
             travVec = fireSolution + self.modelNode.getPos()
             Classes.Missile.missileBay -= 1
-            tag = 'Missile' + str(Classes.Missile.missileCount)
+            tag = 'Missile' + str(Classes.Missile.missileCount + 1)
             Classes.Missile.missileCount += 1
 
             posVec = self.modelNode.getPos() + inFront
@@ -111,23 +111,29 @@ class player:
 
             Classes.Missile.intervals[tag].start()
 
+            self.isReloading = False
+
         else:
             if not self.taskMgr.hasTaskNamed('missileReload'):
                 print('Initializing reload...')
+                self.isReloading = False
                 self.taskMgr.doMethodLater(0, self.reload, 'reload')
+
                 return Task.cont
 
     def reload(self, task):
-        if task.time > Classes.Missile.reloadTime: # if reload time is complete, make sure missileBay is not greater than 1
+        if not self.isReloading:
+            print('Reloading...')  # print once at the start
+            self.isReloading = True
+
+        if task.time > Classes.Missile.reloadTime:
             if Classes.Missile.missileBay > 1:
                 Classes.Missile.missileBay = 1
-            print ('Reload complete.')
+            print('Reload complete.')
+            self.isReloading = False
             return Task.done
 
-        elif task.time < Classes.Missile.reloadTime: # if reload time is not yet complete
-            print ('Reloading...')
-            print('Reload proceeding...')
-            return Task.cont
+        return Task.cont
 
     def checkIntervals(self, task):
         for i in Classes.Missile.intervals:
