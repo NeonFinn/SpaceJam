@@ -11,6 +11,7 @@ class player:
     def __init__(self, loader: Loader, taskMgr: TaskManager, accept: Callable, modelPath: str, parentNode: NodePath,
                  nodeName: str, texPath: str, posVec: Vec3, scaleVec: float, base):
 
+        self.taskMgr = taskMgr
         self.modelNode = loader.loadModel(modelPath)
         self.modelNode.reparentTo(parentNode)
         self.modelNode.setPos(posVec)
@@ -38,6 +39,7 @@ class player:
 
         self.setKeyBinds()
         self.base.taskMgr.add(self.updatePlayer, "updatePlayer")
+        self.taskMgr.add(self.checkIntervals, 'checkMissiles', 34)
 
     def setKey(self, key, value):
         self.keys[key] = value
@@ -77,6 +79,7 @@ class player:
             self.applyThrust()
         if self.keys["fire"]:
             self.fireMissile()
+            self.keys["fire"] = False  # Reset fire key to prevent multiple firings
 
         return Task.cont
 
@@ -107,3 +110,39 @@ class player:
                 2.0, travVec, startPos=posVec, fluid=1)
 
             Classes.Missile.intervals[tag].start()
+
+        else:
+            if not self.taskMgr.hasTaskNamed('missileReload'):
+                print('Initializing reload...')
+                self.taskMgr.doMethodLater(0, self.reload, 'reload')
+                return Task.cont
+
+    def reload(self, task):
+        if task.time > Classes.Missile.reloadTime: # if reload time is complete, make sure missileBay is not greater than 1
+            if Classes.Missile.missileBay > 1:
+                Classes.Missile.missileBay = 1
+            print ('Reload complete.')
+            return Task.done
+
+        elif task.time < Classes.Missile.reloadTime: # if reload time is not yet complete
+            print ('Reloading...')
+            print('Reload proceeding...')
+            return Task.cont
+
+    def checkIntervals(self, task):
+        for i in Classes.Missile.intervals:
+            if not Classes.Missile.intervals[i].isPlaying(): # returns true or false to see if missile has reached path end
+                Classes.Missile.cNodes[i].detachNode()
+                Classes.Missile.fireModels[i].detachNode()
+
+                del Classes.Missile.intervals[i]
+                del Classes.Missile.fireModels[i]
+                del Classes.Missile.cNodes[i]
+                del Classes.Missile.collisionSolids[i]
+
+                Classes.Missile.missileBay += 1
+                print(i + ' has reached the end of its fire solution.')
+
+                break # refactoring to remove all intervals that have completed their fire solution
+
+        return Task.cont

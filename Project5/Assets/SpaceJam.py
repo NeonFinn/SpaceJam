@@ -1,6 +1,7 @@
 from direct.showbase.ShowBase import ShowBase
 from panda3d.core import *
 from panda3d.core import CollisionTraverser, CollisionHandlerPusher
+from direct.gui.OnscreenImage import OnscreenImage
 
 import Classes as Classes
 import DefensePaths as defensePaths
@@ -48,6 +49,7 @@ class MyApp(ShowBase):
             self.cloudDrones = []
 
         SetupScene()
+        self.enableHud()
         self.taskMgr.add(self.SpawnDrones, 'SpawnDronesTask')
         self.setCamera()
 
@@ -143,6 +145,10 @@ class MyApp(ShowBase):
             self.cTrav.addCollider(drone.collisionNode, self.pusher)
 
         return task.cont
+
+    def enableHud(self):
+        self.Hud = OnscreenImage(image ="Hud/crosshair.webp", pos = Vec3(0, 0, 0), scale = (0.1))
+        self.Hud.setTransparency(TransparencyAttrib.MAlpha)
 
 
 
