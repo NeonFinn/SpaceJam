@@ -15,7 +15,6 @@ class Planet(ShowBase):
         tex = loader.loadTexture(texPath)
         self.modelNode.setTexture(tex, 1)
 
-        self.collisionNode = self.modelNode.attachNewNode(CollisionNode(nodeName + '_cNode'))
         self.collisionNode.node().clearSolids()
         self.collisionNode.node().addSolid(CollisionSphere(0,0,0, 1.25))
         self.collisionNode.show()

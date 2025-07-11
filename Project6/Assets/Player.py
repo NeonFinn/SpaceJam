@@ -11,55 +11,52 @@ from direct.particles.ParticleEffect import ParticleEffect
 import re
 from panda3d.core import CollisionTraverser
 
-
 class player:
-    def __init__(self, loader: Loader, taskMgr, accept: Callable, modelPath: str, parentNode: NodePath,
+    def __init__(self, loader: Loader, taskMgr: TaskManager, accept: Callable, modelPath: str, parentNode: NodePath,
                  nodeName: str, texPath: str, posVec: Vec3, scaleVec: float, base):
 
-        self.base = base
-        self.render = base.render
         self.taskMgr = taskMgr
-        self.accept = accept
-        self.cTrav = CollisionTraverser()
-
-        # Load and set up the model
         self.modelNode = loader.loadModel(modelPath)
         self.modelNode.reparentTo(parentNode)
         self.modelNode.setPos(posVec)
         self.modelNode.setScale(scaleVec)
+
         self.modelNode.setName(nodeName)
         tex = loader.loadTexture(texPath)
         self.modelNode.setTexture(tex, 1)
 
-        # Set up collision
         self.collisionNode = self.modelNode.attachNewNode(CollisionNode(nodeName + '_cNode'))
         self.collisionNode.node().addSolid(CollisionSphere(0, 0, 0, 1))
         self.collisionNode.show()
 
-        # Event collision handler
-        self.handler = CollisionHandlerEvent()
-        self.handler.addInPattern('into')
-        self.cTrav.addCollider(self.collisionNode, self.handler)
-
-        self.accept('into', self.HandleInto)
-
-        # Explosion effects
         self.cntExplode = 0
         self.explodeIntervals = {}
 
-        # Controls
-        self.keys = {
-            "forward": False, "turnLeft": False, "turnRight": False,
-            "turnDown": False, "turnUp": False,
-            "rollLeft": False, "rollRight": False, "fire": False
-        }
-        self.setKeyBinds()
+        self.traverser = base.cTrav
 
-        # Tasks
-        self.taskMgr.add(self.updatePlayer, "updatePlayer")
-        self.taskMgr.add(self.checkIntervals, 'checkMissiles', 34)
+        self.handler = CollisionHandlerEvent()
+
+        self.handler.addInPattern('into')
+        accept('into', self.HandleInto)
+
+        self.base = base
 
         self.SetParticles()
+
+        self.keys = {
+            "forward": False,
+            "turnLeft": False,
+            "turnRight": False,
+            "turnDown": False,
+            "turnUp": False,
+            "rollLeft": False,
+            "rollRight": False,
+            "fire": False
+        }
+
+        self.setKeyBinds()
+        self.base.taskMgr.add(self.updatePlayer, "updatePlayer")
+        self.taskMgr.add(self.checkIntervals, 'checkMissiles', 34)
 
     def setKey(self, key, value):
         self.keys[key] = value
@@ -133,7 +130,7 @@ class player:
 
             self.isReloading = False
 
-            self.cTrav.addCollider(currentMissile.collisionNode, self.handler)
+            self.traverser.addCollider(currentMissile.collisionNode, self.handler)
 
         else:
             if not self.taskMgr.hasTaskNamed('missileReload'):
@@ -181,7 +178,7 @@ class player:
         intoNode = entry.getIntoNodePath().getName()
         print("intoNode: " + intoNode)
 
-        intoPosition = entry.getSurfacePoint(self.render)
+        intoPosition = Vec3(entry.getSurfacePoint(self.base.render))
 
         tempVar = fromNode.split('_')
         print("tempVar: " + str(tempVar))
@@ -195,17 +192,18 @@ class player:
         print("Victim: " + str(victim))
 
         pattern = r'[0-9]'
+
         strippedString = re.sub(pattern, '', victim)
 
-        if (strippedString == "Drone" or strippedString == "Planet" or strippedString == "Space Station"):
-            print(victim, ' hit at ', intoPosition)
-            self.ObjectDestroy(intoNode, intoPosition)
+        if (strippedString == "Drone" or strippedString == "Planet" or strippedString == "SpaceStation"):
+            print(victim, 'hit at ', intoPosition)
+            self.DestroyObject(victim, intoPosition)
 
-        print(shooter + ' is DONE')
-        Classes.Missile.intervals[shooter].finish()
+            print (shooter + ' is DONE.')
+            Classes.Missile.intervals[shooter].finish()
 
-    def ObjectDestroy(self, hitID, hitPosition):
-        nodeID = self.render.find(hitID)
+    def DestroyObject(self, hitID, hitPosition):
+        nodeID = self.base.render.find(hitID)
         nodeID.detachNode()
 
         self.explodeNode.setPos(hitPosition)
@@ -213,7 +211,7 @@ class player:
 
     def Explode(self):
         self.cntExplode += 1
-        tag = 'particles_' + str(self.cntExplode)
+        tag = 'particles-' + str(self.cntExplode)
 
         self.explodeIntervals[tag] = LerpFunc(self.ExplodeLight, duration = 4.0)
         self.explodeIntervals[tag].start()
@@ -222,12 +220,12 @@ class player:
         if t == 1.0 and self.explodeEffect:
             self.explodeEffect.disable()
 
-        elif t == 0.0 and self.explodeEffect:
+        elif t == 0.0:
             self.explodeEffect.start(self.explodeNode)
 
     def SetParticles(self):
-        # self.enableParticles()
+        self.enableParticles = True
         self.explodeEffect = ParticleEffect()
-        self.explodeEffect.load_config('Part-Efx/basic_xpld_efx.ptf')
+        self.explodeEffect.loadConfig('Part-Efx/basic_xpld_efx.ptf')
         self.explodeEffect.setScale(20)
-        self.explodeNode = self.render.attachNewNode('ExplosionEffects')
+        self.explodeNode = self.base.render.attachNewNode('ExplosionEffect')

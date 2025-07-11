@@ -32,11 +32,11 @@ class MyApp(ShowBase):
             self.SpaceStation1 = Classes.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render,'SpaceStation1',
                 'SpaceStation/SpaceStation1_Dif2.png', (-2500, 1000, -100),30)
 
-            self.Player = Player.player(self.loader, self.taskMgr, self.accept, 'Spaceships/Dumbledore.x', self.render,
-                'Player', 'Spaceships/spacejet_C.png', (0, 0, 0), 3.0, self)
-
             self.cTrav = CollisionTraverser()
             self.pusher = CollisionHandlerPusher()
+
+            self.Player = Player.player(self.loader, self.taskMgr, self.accept, 'Spaceships/Dumbledore.x', self.render,
+                                        'Player', 'Spaceships/spacejet_C.png', (0, 0, 0), 3.0, self)
 
             self.pusher.addCollider(self.Player.collisionNode, self.Player.modelNode)
             self.cTrav.addCollider(self.Player.collisionNode, self.pusher)
