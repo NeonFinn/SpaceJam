@@ -226,6 +226,6 @@ class player:
     def SetParticles(self):
         self.enableParticles = True
         self.explodeEffect = ParticleEffect()
-        self.explodeEffect.loadConfig('Part-Efx/basic_xpld_efx.ptf')
+        self.explodeEffect.loadConfig('Part-Fx/Part-Efx/basic_xpld_efx.ptf')
         self.explodeEffect.setScale(20)
         self.explodeNode = self.base.render.attachNewNode('ExplosionEffect')

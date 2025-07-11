@@ -2,15 +2,26 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import *
 from panda3d.core import CollisionTraverser, CollisionHandlerPusher
 from direct.gui.OnscreenImage import OnscreenImage
+from panda3d.physics import PhysicsManager
+from panda3d.physics import ParticleSystemManager
+
 
 import Classes as Classes
 import DefensePaths as defensePaths
 import CollideObjectBase
 import Player as Player
 
+
 class MyApp(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
+
+        self.physicsMgr = PhysicsManager()
+        base.physicsMgr = self.physicsMgr  # attach to global base for particle system use
+
+        # Initialize particle manager
+        self.particleMgr = ParticleSystemManager()
+        base.particleMgr = self.particleMgr
 
         def SetupScene():
             self.Universe = Classes.Universe(self.loader, 'Universe/Universe.x', self.render, 'Universe',
