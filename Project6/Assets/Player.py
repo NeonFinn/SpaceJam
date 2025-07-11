@@ -181,22 +181,18 @@ class player:
         intoPosition = Vec3(entry.getSurfacePoint(self.base.render))
 
         tempVar = fromNode.split('_')
-        print("tempVar: " + str(tempVar))
         shooter = tempVar[0]
         print("Shooter: " + str(shooter))
 
-        tempVar = intoNode.split('-')
-        print("TempVar1: " + str(tempVar))
-        tempVar = intoNode.split('_')
-        print("TempVar2: " + str(tempVar))
-        victim = tempVar[0]
-        print("Victim: " + str(victim))
+        # Remove the '_cNode' suffix to get the full unique node name of the victim
+        victim = intoNode.replace('_cNode', '')
+        print("Victim: " + victim)
 
-        pattern = r'[0-9]'
-        strippedString = re.sub(pattern, '', victim)
+        # Extract the prefix without numbers or underscores to identify the type
+        strippedString = re.sub(r'[0-9_]', '', victim)
         print("Stripped string: " + strippedString)
 
-        # Now checking all allowed target types
+        # Check allowed target types by prefix
         if strippedString in ["Drone", "DroneX", "DroneY", "DroneZ", "BaseballSeam", "Planet", "SpaceStation"]:
             print(victim, 'hit at ', intoPosition)
             self.DestroyObject(victim, intoPosition)
@@ -205,7 +201,7 @@ class player:
             Classes.Missile.intervals[shooter].finish()
 
     def DestroyObject(self, hitID, hitPosition):
-        nodeID = self.base.render.find(hitID)
+        nodeID = self.base.render.find(f"**/{hitID}")
         if nodeID.isEmpty():
             print(f"Warning: Node '{hitID}' not found — cannot detach.")
             return
