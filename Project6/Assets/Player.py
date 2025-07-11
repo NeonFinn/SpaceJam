@@ -9,7 +9,6 @@ from panda3d.core import CollisionHandlerEvent
 from direct.interval.LerpInterval import LerpFunc
 from direct.particles.ParticleEffect import ParticleEffect
 import re
-from panda3d.core import CollisionTraverser
 
 class player:
     def __init__(self, loader: Loader, taskMgr: TaskManager, accept: Callable, modelPath: str, parentNode: NodePath,
@@ -208,6 +207,7 @@ class player:
         nodeID.detachNode()
 
         self.explodeNode.setPos(hitPosition)
+        print(f"Explosion position: {hitPosition}")
         self.Explode()
 
     def Explode(self):
@@ -218,16 +218,18 @@ class player:
         self.explodeIntervals[tag].start()
 
     def ExplodeLight(self, t):
-        if t == 1.0 and self.explodeEffect:
-            self.explodeEffect.disable()
-
-        elif t == 0.05:
+        if t == 0.0:
             self.explodeEffect.start(self.explodeNode)
-            self.explodeNode.show()
+        elif t == 1.0 and self.explodeEffect:
+            self.explodeEffect.disable()
 
     def SetParticles(self):
         self.enableParticles = True
         self.explodeEffect = ParticleEffect()
         self.explodeEffect.loadConfig('Part-Fx/Part-Efx/basic_xpld_efx.ptf')
-        self.explodeEffect.setScale(20)
+        self.explodeEffect.setScale(50)
         self.explodeNode = self.base.render.attachNewNode('ExplosionEffect')
+
+        self.explodeEffect.reparentTo(self.explodeNode)
+
+
