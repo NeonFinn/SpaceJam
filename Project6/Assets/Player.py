@@ -59,6 +59,8 @@ class player:
         self.taskMgr.add(self.updatePlayer, "updatePlayer")
         self.taskMgr.add(self.checkIntervals, 'checkMissiles', 34)
 
+        self.SetParticles()
+
     def setKey(self, key, value):
         self.keys[key] = value
 
@@ -179,7 +181,7 @@ class player:
         intoNode = entry.getIntoNodePath().getName()
         print("intoNode: " + intoNode)
 
-        intoPosition = Vec3(entry.getSurfacepoints(self.render))
+        intoPosition = entry.getSurfacePoint(self.render)
 
         tempVar = fromNode.split('_')
         print("tempVar: " + str(tempVar))

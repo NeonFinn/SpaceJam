@@ -5,7 +5,7 @@ from direct.task import Task
 from CollideObjectBase import *
 
 class Planet(ShowBase):
-    def __init__(SphereCollideObject):
+    def __init__(self, loader, modelPath, parentNode, nodeName, texPath, posVec, scaleVec):
         self.modelNode = loader.loadModel(modelPath)
         self.modelNode.reparentTo(parentNode)
         self.modelNode.setPos(posVec)
@@ -15,6 +15,7 @@ class Planet(ShowBase):
         tex = loader.loadTexture(texPath)
         self.modelNode.setTexture(tex, 1)
 
+        self.collisionNode = self.modelNode.attachNewNode(CollisionNode(nodeName + '_cNode'))
         self.collisionNode.node().clearSolids()
         self.collisionNode.node().addSolid(CollisionSphere(0,0,0, 1.25))
         self.collisionNode.show()
