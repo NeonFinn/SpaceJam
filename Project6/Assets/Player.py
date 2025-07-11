@@ -184,6 +184,7 @@ class player:
         print("tempVar: " + str(tempVar))
         shooter = tempVar[0]
         print("Shooter: " + str(shooter))
+
         tempVar = intoNode.split('-')
         print("TempVar1: " + str(tempVar))
         tempVar = intoNode.split('_')
@@ -192,14 +193,15 @@ class player:
         print("Victim: " + str(victim))
 
         pattern = r'[0-9]'
-
         strippedString = re.sub(pattern, '', victim)
+        print("Stripped string: " + strippedString)
 
-        if (strippedString == "Drone" or strippedString == "Planet" or strippedString == "SpaceStation"):
+        # Now checking all allowed target types
+        if strippedString in ["Drone", "DroneX", "DroneY", "DroneZ", "BaseballSeam", "Planet", "SpaceStation"]:
             print(victim, 'hit at ', intoPosition)
             self.DestroyObject(victim, intoPosition)
 
-            print (shooter + ' is DONE.')
+            print(shooter + ' is DONE.')
             Classes.Missile.intervals[shooter].finish()
 
     def DestroyObject(self, hitID, hitPosition):
