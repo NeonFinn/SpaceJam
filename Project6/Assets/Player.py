@@ -204,6 +204,9 @@ class player:
 
     def DestroyObject(self, hitID, hitPosition):
         nodeID = self.base.render.find(hitID)
+        if nodeID.isEmpty():
+            print(f"Warning: Node '{hitID}' not found — cannot detach.")
+            return
         nodeID.detachNode()
 
         self.explodeNode.setPos(hitPosition)
@@ -220,8 +223,9 @@ class player:
         if t == 1.0 and self.explodeEffect:
             self.explodeEffect.disable()
 
-        elif t == 0.0:
+        elif t == 0.05:
             self.explodeEffect.start(self.explodeNode)
+            self.explodeNode.show()
 
     def SetParticles(self):
         self.enableParticles = True
