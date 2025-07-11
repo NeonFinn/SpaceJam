@@ -5,7 +5,7 @@ from direct.task import Task
 from CollideObjectBase import *
 
 class Planet(ShowBase):
-    def __init__(self, loader, modelPath, parentNode, nodeName, texPath, posVec, scaleVec):
+    def __init__(SphereCollideObject):
         self.modelNode = loader.loadModel(modelPath)
         self.modelNode.reparentTo(parentNode)
         self.modelNode.setPos(posVec)
