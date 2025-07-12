@@ -31,18 +31,18 @@ class MyApp(ShowBase):
             self.Planet2 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet2',
                 'Planets/Mars.jpg', (800, 6000, -700), 300, colRadius= 1.1)
             self.Planet3 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet3',
-                'Planets/Mercury.jpg', (5500, -5000, 1000), 500, colRadius= 1.1)
+                'Planets/Mercury.jpg', (1000, -8000, 1000), 500, colRadius= 1.1)
             self.Planet4 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet4',
                 'Planets/Neptune.jpg', (-1200, 6000, 500), 150, colRadius= 1.1)
             self.Planet5 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet5',
-                'Planets/Uranus.jpg', (-5000, 3000, -4000), 500, colRadius= 1.1)
+                'Planets/Uranus.jpg', (-5000, 8000, -2000), 500, colRadius= 1.1)
             self.Planet6 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet6',
-                'Planets/Venus.jpg', (4000, -1300, -1400), 300, colRadius= 1.1)
+                'Planets/Venus.jpg', (4000, -2300, -1400), 300, colRadius= 1.1)
 
             self.SpaceStation1 = Classes.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render,'SpaceStation1',
                 'SpaceStation/SpaceStation1_Dif2.png', (-2500, 1000, -100),30)
 
-            self.fogZone = Classes.FogZone(self.render, Vec3(2000, 4000, 200), 500)
+            self.fogZone = Classes.FogZone(self.render, Vec3(2000, 2000, 200), 500)
 
             self.cTrav = CollisionTraverser()
             self.pusher = CollisionHandlerPusher()
