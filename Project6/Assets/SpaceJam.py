@@ -29,7 +29,7 @@ class MyApp(ShowBase):
             self.Planet1 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet1',
                 'Planets/Jupiter.jpg', (-6000, -3000, -800), 250, colRadius= 1.1)
             self.Planet2 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet2',
-                'Planets/Mars.jpg', (800, 6000, 0), 300, colRadius= 1.1)
+                'Planets/Mars.jpg', (800, 6000, -700), 300, colRadius= 1.1)
             self.Planet3 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet3',
                 'Planets/Mercury.jpg', (5500, -5000, 1000), 500, colRadius= 1.1)
             self.Planet4 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet4',
@@ -41,6 +41,8 @@ class MyApp(ShowBase):
 
             self.SpaceStation1 = Classes.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render,'SpaceStation1',
                 'SpaceStation/SpaceStation1_Dif2.png', (-2500, 1000, -100),30)
+
+            self.fogZone = Classes.FogZone(self.render, Vec3(2000, 4000, 200), 500)
 
             self.cTrav = CollisionTraverser()
             self.pusher = CollisionHandlerPusher()
@@ -159,6 +161,8 @@ class MyApp(ShowBase):
     def enableHud(self):
         self.Hud = OnscreenImage(image ="Hud/crosshair.png", pos = Vec3(0, 0, 0), scale = (0.1))
         self.Hud.setTransparency(TransparencyAttrib.MAlpha)
+
+
 
 app = MyApp() # create instance of MyApp
 app.run() # run application

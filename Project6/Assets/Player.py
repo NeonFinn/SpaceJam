@@ -99,10 +99,20 @@ class player:
         return Task.cont
 
     def applyThrust(self):
-        rate = 2
+        base_speed = 2
+
+        # Default speed multiplier
+        speedMultiplier = 1.0
+
+        # Check if fogZone exists in base and if player is inside it
+        if hasattr(self.base, "fogZone"):
+            playerPos = self.modelNode.getPos()
+            if self.base.fogZone.inside(playerPos):
+                speedMultiplier = 0.4  # slow down in fog
+
         trajectory = self.base.render.getRelativeVector(self.modelNode, Vec3(0, 1, 0))  # Forward is Y
         trajectory.normalize()
-        self.modelNode.setFluidPos(self.modelNode.getPos() + trajectory * rate)
+        self.modelNode.setFluidPos(self.modelNode.getPos() + trajectory * base_speed * speedMultiplier)
 
     def fireMissile(self):
         if Classes.Missile.missileBay > 0:

@@ -1,5 +1,5 @@
 from direct.showbase.ShowBase import ShowBase
-
+from panda3d.core import NodePath, Vec3, TransparencyAttrib
 from CollideObjectBase import *
 
 class Planet(ShowBase):
@@ -82,3 +82,20 @@ class Missile(SphereCollideObject):
         self.collisionNode.show()
 
         print("Fire torpedo #" + str(Missile.missileCount))
+
+class FogZone:
+    def __init__(self, render, position: Vec3, radius: float):
+        self.node = render.attachNewNode("FogZone")
+        self.node.setPos(position)
+
+        # Use a sphere model as the fog visual (could swap with flat card if you want)
+        self.fogVisual = loader.loadModel("models/misc/sphere")  # default sphere model from Panda3D
+        self.fogVisual.reparentTo(self.node)
+        self.fogVisual.setScale(radius)
+        self.fogVisual.setColor(0.5, 0.5, 0.5, 0.3)  # light gray, semi-transparent
+        self.fogVisual.setTransparency(TransparencyAttrib.MAlpha)
+        self.fogVisual.setTwoSided(True)
+
+    def inside(self, point: Vec3) -> bool:
+        # Simple radius check
+        return (point - self.node.getPos()).length() < self.fogVisual.getScale().getX()
