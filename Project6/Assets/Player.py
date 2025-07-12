@@ -41,6 +41,16 @@ class player:
 
         self.SetParticles()
 
+        # Load and play ambient space noise looped quietly
+        self.ambientSound = base.loader.loadSfx('Noise/ambient.mp3')
+        self.ambientSound.setLoop(True)
+        self.ambientSound.setVolume(0.01)
+        self.ambientSound.play()
+
+        # Load and set up the missile fire sound
+        self.fireSound = base.loader.loadSfx('Noise/missile.mp3')
+        self.fireSound.setVolume(0.6)
+
         self.keys = {
             "forward": False,
             "turnLeft": False,
@@ -135,7 +145,7 @@ class player:
                 2.0, travVec, startPos=posVec, fluid=1)
 
             Classes.Missile.intervals[tag].start()
-
+            self.fireSound.play()
             self.isReloading = False
 
             self.traverser.addCollider(currentMissile.collisionNode, self.handler)
