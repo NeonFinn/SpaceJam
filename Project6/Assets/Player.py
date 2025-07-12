@@ -14,6 +14,7 @@ class player:
     def __init__(self, loader: Loader, taskMgr: TaskManager, accept: Callable, modelPath: str, parentNode: NodePath,
                  nodeName: str, texPath: str, posVec: Vec3, scaleVec: float, base):
 
+
         self.taskMgr = taskMgr
         self.modelNode = loader.loadModel(modelPath)
         self.modelNode.reparentTo(parentNode)
@@ -189,7 +190,6 @@ class player:
 
         # Extract the prefix without numbers or underscores to identify the type
         strippedString = re.sub(r'[0-9_]', '', victim)
-        print("Stripped string: " + strippedString)
 
         # Check allowed target types by prefix
         if strippedString in ["Drone", "DroneX", "DroneY", "DroneZ", "BaseballSeam", "Planet", "SpaceStation"]:
@@ -202,23 +202,41 @@ class player:
     def DestroyObject(self, hitID, hitPosition):
         nodeID = self.base.render.find(f"**/{hitID}")
         if nodeID.isEmpty():
-            print(f"Warning: Node '{hitID}' not found — cannot detach.")
             return
         nodeID.detachNode()
 
         self.explodeNode.setPos(hitPosition)
         print(f"Explosion position: {hitPosition}")
-        self.Explode()
+        self.Explode(hitPosition)
 
-    def Explode(self):
+    def Explode(self, position):
+        cnt = self.cntExplode
         self.cntExplode += 1
-        tag = 'particles-' + str(self.cntExplode)
+        tag = f'Explosion-{cnt}'
 
-        self.explodeIntervals[tag] = LerpFunc(self.ExplodeLight, duration = 4.0)
-        self.explodeIntervals[tag].start()
+        # Create a new node for this explosion
+        explodeNode = self.base.render.attachNewNode(tag)
+        explodeNode.setPos(position)
+
+        # Create a fresh ParticleEffect instance and load config
+        effect = ParticleEffect()
+        effect.loadConfig('Part-Fx/Part-Efx/basic_xpld_efx.ptf')
+        effect.setScale(50)
+        effect.start(explodeNode)
+
+        # Reset particles to emit instantly
+        effect.softStart()
+
+        # Clean up after 4 seconds
+        def cleanupExplosion(task):
+            effect.cleanup()
+            explodeNode.removeNode()
+            return Task.done
+
+        self.taskMgr.doMethodLater(4.0, cleanupExplosion, f'{tag}-cleanup')
 
     def ExplodeLight(self, t):
-        if t == 0.0:
+        if t == 0.00:
             self.explodeEffect.start(self.explodeNode)
         elif t == 1.0 and self.explodeEffect:
             self.explodeEffect.disable()
@@ -227,9 +245,7 @@ class player:
         self.enableParticles = True
         self.explodeEffect = ParticleEffect()
         self.explodeEffect.loadConfig('Part-Fx/Part-Efx/basic_xpld_efx.ptf')
-        self.explodeEffect.setScale(50)
+        self.explodeEffect.setScale(100)
         self.explodeNode = self.base.render.attachNewNode('ExplosionEffect')
 
         self.explodeEffect.reparentTo(self.explodeNode)
-
-

@@ -23,6 +23,8 @@ class MyApp(ShowBase):
         self.particleMgr = ParticleSystemManager()
         base.particleMgr = self.particleMgr
 
+        self.enableParticles()
+
         def SetupScene():
             self.Universe = Classes.Universe(self.loader, 'Universe/Universe.x', self.render, 'Universe',
                                              'Universe/starfield-in-blue.jpg', Vec3(0, 0, 0), 10000)
