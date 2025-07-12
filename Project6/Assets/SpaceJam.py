@@ -2,15 +2,12 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import *
 from panda3d.core import CollisionTraverser, CollisionHandlerPusher
 from direct.gui.OnscreenImage import OnscreenImage
-from panda3d.physics import PhysicsManager
-from panda3d.physics import ParticleSystemManager
+from panda3d.physics import PhysicsManager, ParticleSystemManager
 
-
-import Classes as Classes
+import Classes
 import DefensePaths as defensePaths
 import CollideObjectBase
-import Player as Player
-
+import Player
 
 class MyApp(ShowBase):
     def __init__(self):
@@ -162,8 +159,6 @@ class MyApp(ShowBase):
     def enableHud(self):
         self.Hud = OnscreenImage(image ="Hud/crosshair.png", pos = Vec3(0, 0, 0), scale = (0.1))
         self.Hud.setTransparency(TransparencyAttrib.MAlpha)
-
-
 
 app = MyApp() # create instance of MyApp
 app.run() # run application

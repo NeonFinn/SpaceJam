@@ -1,4 +1,3 @@
-from CollideObjectBase import SphereCollideObject
 from panda3d.core import Loader, NodePath, Vec3
 from direct.task.Task import TaskManager
 from typing import Callable
@@ -6,7 +5,6 @@ from direct.task import Task
 from panda3d.core import CollisionNode, CollisionSphere
 from Project5.Assets import Classes
 from panda3d.core import CollisionHandlerEvent
-from direct.interval.LerpInterval import LerpFunc
 from direct.particles.ParticleEffect import ParticleEffect
 import re
 
