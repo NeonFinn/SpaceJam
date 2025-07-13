@@ -49,7 +49,7 @@ class player:
 
         # Load and set up the missile fire sound
         self.fireSound = base.loader.loadSfx('Noise/missile.mp3')
-        self.fireSound.setVolume(0.6)
+        self.fireSound.setVolume(0.1)
 
         self.keys = {
             "forward": False,
