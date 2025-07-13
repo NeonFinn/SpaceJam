@@ -162,7 +162,5 @@ class MyApp(ShowBase):
         self.Hud = OnscreenImage(image ="Hud/crosshair.png", pos = Vec3(0, 0, 0), scale = (0.05))
         self.Hud.setTransparency(TransparencyAttrib.MAlpha)
 
-
-
 app = MyApp() # create instance of MyApp
 app.run() # run application
