@@ -159,7 +159,7 @@ class MyApp(ShowBase):
         return task.cont
 
     def enableHud(self):
-        self.Hud = OnscreenImage(image ="Hud/crosshair.png", pos = Vec3(0, 0, 0), scale = (0.1))
+        self.Hud = OnscreenImage(image ="Hud/crosshair.png", pos = Vec3(0, 0, 0), scale = (0.05))
         self.Hud.setTransparency(TransparencyAttrib.MAlpha)
 
 
