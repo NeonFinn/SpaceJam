@@ -13,14 +13,15 @@ class MyApp(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
 
+        # Initialize physics manager
         self.physicsMgr = PhysicsManager()
-        base.physicsMgr = self.physicsMgr  # attach to global base for particle system use
+        base.physicsMgr = self.physicsMgr
 
         # Initialize particle manager
         self.particleMgr = ParticleSystemManager()
         base.particleMgr = self.particleMgr
 
-        self.enableParticles()
+        self.enableParticles() # Call function to actually let particles show up... I forgot last time
 
         def SetupScene():
             self.Universe = Classes.Universe(self.loader, 'Universe/Universe.x', self.render, 'Universe',
@@ -121,7 +122,6 @@ class MyApp(ShowBase):
             self.cloudDrones.append(drone)
 
     def SpawnDrones(self, task):
-
         if task.frame == 0:
             for i in range(60):
                 self.DrawCircleX(droneName=f'DroneX_{i}', radius=3, numPoints=60, step=i)

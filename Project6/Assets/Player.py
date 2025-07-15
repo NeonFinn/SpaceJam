@@ -12,7 +12,6 @@ class player:
     def __init__(self, loader: Loader, taskMgr: TaskManager, accept: Callable, modelPath: str, parentNode: NodePath,
                  nodeName: str, texPath: str, posVec: Vec3, scaleVec: float, base):
 
-
         self.taskMgr = taskMgr
         self.modelNode = loader.loadModel(modelPath)
         self.modelNode.reparentTo(parentNode)
@@ -41,13 +40,13 @@ class player:
 
         self.SetParticles()
 
-        # Load and play ambient space noise looped quietly
+        # Load and loop space noise continuously
         self.ambientSound = base.loader.loadSfx('Noise/ambient.mp3')
         self.ambientSound.setLoop(True)
         self.ambientSound.setVolume(0.01)
         self.ambientSound.play()
 
-        # Load and set up the missile fire sound
+        # Load sound for missile
         self.fireSound = base.loader.loadSfx('Noise/missile.mp3')
         self.fireSound.setVolume(0.1)
 
@@ -104,21 +103,19 @@ class player:
             self.applyThrust()
         if self.keys["fire"]:
             self.fireMissile()
-            self.keys["fire"] = False  # Reset fire key to prevent multiple firings
+            self.keys["fire"] = False  # Reset fire key so it doesn't keep firing
 
         return Task.cont
 
     def applyThrust(self):
         base_speed = 2
-
-        # Default speed multiplier
         speedMultiplier = 1.0
 
-        # Check if fogZone exists in base and if player is inside it
+        # Check if player is in fog zone and slow them down accordingly
         if hasattr(self.base, "fogZone"):
             playerPos = self.modelNode.getPos()
             if self.base.fogZone.inside(playerPos):
-                speedMultiplier = 0.4  # slow down in fog
+                speedMultiplier = 0.4
 
         trajectory = self.base.render.getRelativeVector(self.modelNode, Vec3(0, 1, 0))  # Forward is Y
         trajectory.normalize()
@@ -160,7 +157,7 @@ class player:
 
     def reload(self, task):
         if not self.isReloading:
-            print('Reloading...')  # print once at the start
+            print('Reloading...')
             self.isReloading = True
 
         if task.time > Classes.Missile.reloadTime:
@@ -174,7 +171,7 @@ class player:
 
     def checkIntervals(self, task):
         for i in Classes.Missile.intervals:
-            if not Classes.Missile.intervals[i].isPlaying(): # returns true or false to see if missile has reached path end
+            if not Classes.Missile.intervals[i].isPlaying(): # Returns true or false to see if missile has reached path end
                 Classes.Missile.cNodes[i].detachNode()
                 Classes.Missile.fireModels[i].detachNode()
 
@@ -186,7 +183,7 @@ class player:
                 Classes.Missile.missileBay += 1
                 print(i + ' has reached the end of its fire solution.')
 
-                break # refactoring to remove all intervals that have completed their fire solution
+                break # Refactoring to remove all intervals that have completed their path
 
         return Task.cont
 
@@ -202,14 +199,14 @@ class player:
         shooter = tempVar[0]
         print("Shooter: " + str(shooter))
 
-        # Remove the '_cNode' suffix to get the full unique node name of the victim
+        # Remove the '_cNode' suffix to get node name
         victim = intoNode.replace('_cNode', '')
         print("Victim: " + victim)
 
-        # Extract the prefix without numbers or underscores to identify the type
+        # Remove prefix and suffix to get base item type
         strippedString = re.sub(r'[0-9_]', '', victim)
 
-        # Check allowed target types by prefix
+        # Check if object is allowed to be destroyed
         if strippedString in ["Drone", "DroneX", "DroneY", "DroneZ", "BaseballSeam", "Planet", "SpaceStation"]:
             print(victim, 'hit at ', intoPosition)
             self.DestroyObject(victim, intoPosition)
@@ -232,11 +229,11 @@ class player:
         self.cntExplode += 1
         tag = f'Explosion-{cnt}'
 
-        # Create a new node for this explosion
+        # Create a new node for explosion
         explodeNode = self.base.render.attachNewNode(tag)
         explodeNode.setPos(position)
 
-        # Create a fresh ParticleEffect instance and load config
+        # Create a new ParticleEffect instance and load
         effect = ParticleEffect()
         effect.loadConfig('Part-Fx/Part-Efx/basic_xpld_efx.ptf')
         effect.setScale(50)
