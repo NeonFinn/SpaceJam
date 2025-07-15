@@ -99,7 +99,6 @@ class MyApp(ShowBase):
                                   droneName, 'DroneDefender/Drones.jpg', position, 5)
             self.cloudDrones.append(drone)
 
-
     def DrawCircleY(self, droneName, radius = 1, numPoints = 100, step = 50):
         points = defensePaths.CircleY(radius, numPoints)
         if step < len(points):

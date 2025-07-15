@@ -43,7 +43,7 @@ class player:
         # Load and loop space noise continuously
         self.ambientSound = base.loader.loadSfx('Noise/ambient.mp3')
         self.ambientSound.setLoop(True)
-        self.ambientSound.setVolume(0.01)
+        self.ambientSound.setVolume(0.1)
         self.ambientSound.play()
 
         # Load sound for missile
