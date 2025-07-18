@@ -3,7 +3,7 @@ from direct.task.Task import TaskManager
 from typing import Callable
 from direct.task import Task
 from panda3d.core import CollisionNode, CollisionSphere
-from Project5.Assets import Classes
+import Classes as classesRef
 from panda3d.core import CollisionHandlerEvent
 from direct.particles.ParticleEffect import ParticleEffect
 import re
@@ -86,7 +86,8 @@ class player:
         self.base.accept("f", self.setKey, ["fire", True])
 
     def updatePlayer(self, task):
-        rate = 0.25
+        rate = 0.25 * self.getCamSlowMultiplier()
+
         if self.keys["turnLeft"]:
             self.modelNode.setH(self.modelNode.getH() + rate)
         if self.keys["turnRight"]:
@@ -108,40 +109,48 @@ class player:
         return Task.cont
 
     def applyThrust(self):
-        base_speed = 2
+        speed = 2
         speedMultiplier = 1.0
 
-        # Check if player is in fog zone and slow them down accordingly
+        # Check if player is in fog zone and slow them and rotation down accordingly
         if hasattr(self.base, "fogZone"):
             playerPos = self.modelNode.getPos()
             if self.base.fogZone.inside(playerPos):
-                speedMultiplier = 0.4
+                speedMultiplier = 0.25
 
         trajectory = self.base.render.getRelativeVector(self.modelNode, Vec3(0, 1, 0))  # Forward is Y
         trajectory.normalize()
-        self.modelNode.setFluidPos(self.modelNode.getPos() + trajectory * base_speed * speedMultiplier)
+        self.modelNode.setFluidPos(self.modelNode.getPos() + trajectory * speed * speedMultiplier)
+
+    def getCamSlowMultiplier(self):
+        camSlowMultiplier = 1.0
+        if hasattr(self.base, "fogZone"):
+            playerPos = self.modelNode.getPos()
+            if self.base.fogZone.inside(playerPos):
+                camSlowMultiplier = 0.25
+        return camSlowMultiplier
 
     def fireMissile(self):
-        if Classes.Missile.missileBay > 0:
+        if classesRef.Missile.missileBay > 0:
             aim = self.base.render.getRelativeVector(self.modelNode, Vec3.forward())
             aim.normalize()
 
-            fireSolution = aim * Classes.Missile.missileDistance
+            fireSolution = aim * classesRef.Missile.missileDistance
             inFront = aim * 150
 
             travVec = fireSolution + self.modelNode.getPos()
-            Classes.Missile.missileBay -= 1
-            tag = 'Missile' + str(Classes.Missile.missileCount + 1)
-            Classes.Missile.missileCount += 1
+            classesRef.Missile.missileBay -= 1
+            tag = 'Missile' + str(classesRef.Missile.missileCount + 1)
+            classesRef.Missile.missileCount += 1
 
             posVec = self.modelNode.getPos() + inFront
-            currentMissile = Classes.Missile(self.base.loader, 'Phaser/phaser.egg', self.base.render,
+            currentMissile = classesRef.Missile(self.base.loader, 'Phaser/phaser.egg', self.base.render,
                                              tag, posVec, 4.0)
 
-            Classes.Missile.intervals[tag] = currentMissile.modelNode.posInterval(
+            classesRef.Missile.intervals[tag] = currentMissile.modelNode.posInterval(
                 2.0, travVec, startPos=posVec, fluid=1)
 
-            Classes.Missile.intervals[tag].start()
+            classesRef.Missile.intervals[tag].start()
             self.fireSound.play()
             self.isReloading = False
 
@@ -160,9 +169,9 @@ class player:
             print('Reloading...')
             self.isReloading = True
 
-        if task.time > Classes.Missile.reloadTime:
-            if Classes.Missile.missileBay > 1:
-                Classes.Missile.missileBay = 1
+        if task.time > classesRef.Missile.reloadTime:
+            if classesRef.Missile.missileBay > 1:
+                classesRef.Missile.missileBay = 1
             print('Reload complete.')
             self.isReloading = False
             return Task.done
@@ -170,17 +179,17 @@ class player:
         return Task.cont
 
     def checkIntervals(self, task):
-        for i in Classes.Missile.intervals:
-            if not Classes.Missile.intervals[i].isPlaying(): # Returns true or false to see if missile has reached path end
-                Classes.Missile.cNodes[i].detachNode()
-                Classes.Missile.fireModels[i].detachNode()
+        for i in classesRef.Missile.intervals:
+            if not classesRef.Missile.intervals[i].isPlaying(): # Returns true or false to see if missile has reached path end
+                classesRef.Missile.cNodes[i].detachNode()
+                classesRef.Missile.fireModels[i].detachNode()
 
-                del Classes.Missile.intervals[i]
-                del Classes.Missile.fireModels[i]
-                del Classes.Missile.cNodes[i]
-                del Classes.Missile.collisionSolids[i]
+                del classesRef.Missile.intervals[i]
+                del classesRef.Missile.fireModels[i]
+                del classesRef.Missile.cNodes[i]
+                del classesRef.Missile.collisionSolids[i]
 
-                Classes.Missile.missileBay += 1
+                classesRef.Missile.missileBay += 1
                 print(i + ' has reached the end of its fire solution.')
 
                 break # Refactoring to remove all intervals that have completed their path
@@ -212,7 +221,7 @@ class player:
             self.DestroyObject(victim, intoPosition)
 
             print(shooter + ' is DONE.')
-            Classes.Missile.intervals[shooter].finish()
+            classesRef.Missile.intervals[shooter].finish()
 
     def DestroyObject(self, hitID, hitPosition):
         nodeID = self.base.render.find(f"**/{hitID}")

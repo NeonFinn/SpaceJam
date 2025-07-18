@@ -4,7 +4,7 @@ from panda3d.core import CollisionTraverser, CollisionHandlerPusher
 from direct.gui.OnscreenImage import OnscreenImage
 from panda3d.physics import PhysicsManager, ParticleSystemManager
 
-import Classes
+import Classes as classesRef
 import DefensePaths as defensePaths
 import CollideObjectBase
 import Player
@@ -24,7 +24,7 @@ class MyApp(ShowBase):
         self.enableParticles() # Call function to actually let particles show up... I forgot last time
 
         def SetupScene():
-            self.Universe = Classes.Universe(self.loader, 'Universe/Universe.x', self.render, 'Universe',
+            self.Universe = classesRef.Universe(self.loader, 'Universe/Universe.x', self.render, 'Universe',
                                              'Universe/starfield-in-blue.jpg', Vec3(0, 0, 0), 10000)
 
             self.Planet1 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet1',
@@ -40,10 +40,10 @@ class MyApp(ShowBase):
             self.Planet6 = CollideObjectBase.SphereCollideObject(self.loader, 'Planets/protoPlanet.x', self.render,'Planet6',
                 'Planets/Venus.jpg', (4000, -2300, -1400), 300, colRadius= 1.1)
 
-            self.SpaceStation1 = Classes.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render,'SpaceStation1',
+            self.SpaceStation1 = classesRef.SpaceStation(self.loader, 'SpaceStation/spaceStation.x', self.render,'SpaceStation1',
                 'SpaceStation/SpaceStation1_Dif2.png', (-2500, 1000, -100),30)
 
-            self.fogZone = Classes.FogZone(self.render, Vec3(2000, 2000, 200), 500)
+            self.fogZone = classesRef.FogZone(self.render, Vec3(2000, 2000, 200), 500)
 
             self.cTrav = CollisionTraverser()
             self.pusher = CollisionHandlerPusher()
@@ -76,7 +76,7 @@ class MyApp(ShowBase):
         unitVec.normalize()
         position = unitVec * radius * 250 + centralObject.modelNode.getPos()
 
-        drone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
+        drone = classesRef.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
                               droneName, 'DroneDefender/Drones.jpg', position, 5)
         self.cloudDrones.append(drone)
 
@@ -85,7 +85,7 @@ class MyApp(ShowBase):
         unitVec.normalize()
         position = unitVec * 700 + centralObject.modelNode.getPos()
 
-        drone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
+        drone = classesRef.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
                               droneName, 'DroneDefender/Drones.jpg', position, 5)
         self.cloudDrones.append(drone)
 
@@ -95,7 +95,7 @@ class MyApp(ShowBase):
             unitVec = points[step]
             position = unitVec * 300
 
-            drone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
+            drone = classesRef.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
                                   droneName, 'DroneDefender/Drones.jpg', position, 5)
             self.cloudDrones.append(drone)
 
@@ -105,7 +105,7 @@ class MyApp(ShowBase):
             unitVec = points[step]
             position = unitVec * 300
 
-            drone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
+            drone = classesRef.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
                                   droneName, 'DroneDefender/Drones.jpg', position, 5)
             self.cloudDrones.append(drone)
 
@@ -116,7 +116,7 @@ class MyApp(ShowBase):
             unitVec = points[step]
             position = unitVec * 300
 
-            drone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
+            drone = classesRef.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
                                   droneName, 'DroneDefender/Drones.jpg', position, 5)
             self.cloudDrones.append(drone)
 
@@ -141,14 +141,14 @@ class MyApp(ShowBase):
             return task.cont
 
         while len(self.cloudDrones) < maxCloudDrones:
-            Classes.Drone.droneCount += 1
-            droneName = f'Drone{Classes.Drone.droneCount}'
+            classesRef.Drone.droneCount += 1
+            droneName = f'Drone{classesRef.Drone.droneCount}'
 
             unitVec = defensePaths.Cloud(radius=1)
             unitVec.normalize()
             position = unitVec * 350 + self.Planet4.modelNode.getPos()
 
-            drone = Classes.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
+            drone = classesRef.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
                           droneName, 'DroneDefender/Drones.jpg', position, 5)
 
             self.cloudDrones.append(drone)
