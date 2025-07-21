@@ -50,6 +50,11 @@ class player:
         self.fireSound = base.loader.loadSfx('Noise/missile.mp3')
         self.fireSound.setVolume(0.1)
 
+        self.moveSound = base.loader.loadSfx('Noise/forward.mp3')
+        self.moveSound.setLoop(True)
+        self.moveSound.setVolume(1)
+        self.moveSoundPlaying = False
+
         self.keys = {
             "forward": False,
             "turnLeft": False,
@@ -100,8 +105,17 @@ class player:
             self.modelNode.setR(self.modelNode.getR() - rate)
         if self.keys["rollRight"]:
             self.modelNode.setR(self.modelNode.getR() + rate)
+
         if self.keys["forward"]:
             self.applyThrust()
+            if not self.moveSoundPlaying:
+                self.moveSound.play()
+                self.moveSoundPlaying = True
+        else:
+            if self.moveSoundPlaying:
+                self.moveSound.stop()
+                self.moveSoundPlaying = False
+
         if self.keys["fire"]:
             self.fireMissile()
             self.keys["fire"] = False  # Reset fire key so it doesn't keep firing
