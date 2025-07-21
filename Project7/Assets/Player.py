@@ -1,3 +1,5 @@
+import time
+
 from panda3d.core import Loader, NodePath, Vec3
 from direct.task.Task import TaskManager
 from typing import Callable
@@ -50,10 +52,14 @@ class player:
         self.fireSound = base.loader.loadSfx('Noise/missile.mp3')
         self.fireSound.setVolume(0.1)
 
+        # Load sound for movement
         self.moveSound = base.loader.loadSfx('Noise/forward.mp3')
         self.moveSound.setLoop(True)
         self.moveSound.setVolume(1)
         self.moveSoundPlaying = False
+
+        self.fireCooldown = 0.5  # cooldown time in seconds between shots
+        self.lastFireTime = 0
 
         self.keys = {
             "forward": False,
@@ -117,8 +123,21 @@ class player:
                 self.moveSoundPlaying = False
 
         if self.keys["fire"]:
-            self.fireMissile()
-            self.keys["fire"] = False  # Reset fire key so it doesn't keep firing
+            currentTime = time.time()
+
+            # longer cooldown in fog
+            cooldownMultiplier = 1.0
+            if hasattr(self.base, "fogZone"):
+                playerPos = self.modelNode.getPos()
+                if self.base.fogZone.inside(playerPos):
+                    cooldownMultiplier = 3.0  # 3x slower
+
+            effectiveCooldown = self.fireCooldown * cooldownMultiplier
+
+            if currentTime - self.lastFireTime >= effectiveCooldown:
+                self.fireMissile()
+                self.lastFireTime = currentTime
+            self.keys["fire"] = False
 
         return Task.cont
 
