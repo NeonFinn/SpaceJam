@@ -143,3 +143,24 @@ class Orbiter(SphereCollideObject):
 
             self.modelNode.lookAt(self.staringAt.modelNode)
             return task.cont
+
+class Consumable:
+    def __init__(self, loader, render, name, position, scale=2.0):
+        self.name = name
+        self.modelNode = loader.loadModel('models/misc/sphere')  # built-in sphere
+        self.modelNode.setColor(1.0, 0.4, 0.7, 1)  # pink (R, G, B, A)
+        self.modelNode.setScale(scale)
+        self.modelNode.reparentTo(render)
+        self.modelNode.setPos(position)
+
+        # Collision
+        cNode = CollisionNode(name)
+        cNode.addSolid(CollisionSphere(0, 0, 0, 1.5))  # Adjust radius if needed
+        self.collisionNode = self.modelNode.attachNewNode(cNode)
+        self.collisionNode.setTag("type", "consumable")
+
+        self.collected = False
+
+    def collect(self):
+        self.collected = True
+        self.modelNode.hide()

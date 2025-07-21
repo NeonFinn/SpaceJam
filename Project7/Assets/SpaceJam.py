@@ -1,4 +1,5 @@
 from direct.showbase.ShowBase import ShowBase
+from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import *
 from panda3d.core import CollisionTraverser, CollisionHandlerPusher
 from direct.gui.OnscreenImage import OnscreenImage
@@ -58,6 +59,16 @@ class MyApp(ShowBase):
                 self.pusher.addCollider(planet.collisionNode, planet.modelNode)
                 self.cTrav.addCollider(planet.collisionNode, self.pusher)
 
+            self.consumables = []
+
+            self.powerup1 = classesRef.Consumable(self.loader, self.render, 'Power1', Vec3(0, 300, 0), 25)
+
+            self.consumables.append(self.powerup1)
+
+            for powerup in self.consumables:
+                self.pusher.addCollider(powerup.collisionNode, powerup.modelNode)
+                self.cTrav.addCollider(powerup.collisionNode, self.pusher)
+
             self.Player.modelNode.setHpr(0, 0, 0)
             self.cloudDrones = []
 
@@ -72,6 +83,8 @@ class MyApp(ShowBase):
 
         SetupScene()
         self.enableHud()
+        self.taskMgr.add(self.checkPowerupCollision, "CheckPowerupCollision")
+        self.boostTime = 0
         self.taskMgr.add(self.updateSystemsDownOverlay, 'UpdateSystemsDownOverlayTask')
         self.taskMgr.add(self.SpawnDrones, 'SpawnDronesTask')
         self.setCamera()
@@ -182,6 +195,33 @@ class MyApp(ShowBase):
             self.systemsDownOverlay.show()
         else:
             self.systemsDownOverlay.hide()
+        return task.cont
+
+    def checkPowerupCollision(self, task):
+        playerPos = self.Player.modelNode.getPos()
+        for powerup in self.consumables:
+            if not powerup.collected:
+                dist = (powerup.modelNode.getPos() - playerPos).length()
+                if dist < 50:
+                    powerup.collect()
+                    self.activateBoost()
+        return task.cont
+
+    def activateBoost(self):
+        self.Player.speedMultiplier = 2.0
+        self.Player.fireRateBoost = True
+        self.Player.fireCooldown = 0.2  # ↓ reduce fire delay
+        self.boostTime = 5.0
+        self.taskMgr.add(self.handleBoostTimer, "BoostTimerTask")
+
+    def handleBoostTimer(self, task):
+        dt = globalClock.getDt()
+        self.boostTime -= dt
+        if self.boostTime <= 0:
+            self.Player.speedMultiplier = 1.0
+            self.Player.fireRateBoost = False
+            self.Player.fireCooldown = self.Player.originalFireCooldown  # reset properly
+            return task.done
         return task.cont
 
 app = MyApp() # create instance of MyApp

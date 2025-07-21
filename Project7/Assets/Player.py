@@ -1,5 +1,6 @@
 import time
 
+from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import Loader, NodePath, Vec3
 from direct.task.Task import TaskManager
 from typing import Callable
@@ -58,8 +59,14 @@ class player:
         self.moveSound.setVolume(1)
         self.moveSoundPlaying = False
 
-        self.fireCooldown = 0.5  # cooldown time in seconds between shots
+        self.fireCooldown = 0.5
+        self.originalFireCooldown = 2.0
+
         self.lastFireTime = 0
+
+        self.speedMultiplier = 1.0
+        self.fireRateBoost = False
+        self.boostDuration = 0.0
 
         self.keys = {
             "forward": False,
@@ -133,16 +140,26 @@ class player:
                     cooldownMultiplier = 3.0  # 3x slower
 
             effectiveCooldown = self.fireCooldown * cooldownMultiplier
+            if self.fireRateBoost:
+                effectiveCooldown *= 0.25  # 75% faster fire rate
 
-            if currentTime - self.lastFireTime >= effectiveCooldown:
+            currentTime = time.time()
+            if currentTime - self.lastFireTime >= self.fireCooldown:
                 self.fireMissile()
                 self.lastFireTime = currentTime
+
             self.keys["fire"] = False
+
+            if self.boostDuration > 0:
+                self.boostDuration -= globalClock.getDt()
+                if self.boostDuration <= 0:
+                    self.speedMultiplier = 1.0
+                    self.fireCooldown = 2.0  # back to normal
 
         return Task.cont
 
     def applyThrust(self):
-        speed = 2
+        speed = 2 * self.speedMultiplier
         speedMultiplier = 1.0
 
         # Check if player is in fog zone and slow them and rotation down accordingly
@@ -295,3 +312,9 @@ class player:
         self.explodeNode = self.base.render.attachNewNode('ExplosionEffect')
 
         self.explodeEffect.reparentTo(self.explodeNode)
+
+    def applyPowerUpBoost(self, duration=5.0):
+        self.speedMultiplier = 2.0
+        self.fireCooldown = 0.5  # faster firing during boost
+        self.boostDuration = duration
+
