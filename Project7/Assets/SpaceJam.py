@@ -72,8 +72,14 @@ class MyApp(ShowBase):
 
         SetupScene()
         self.enableHud()
+        self.taskMgr.add(self.updateSystemsDownOverlay, 'UpdateSystemsDownOverlayTask')
         self.taskMgr.add(self.SpawnDrones, 'SpawnDronesTask')
         self.setCamera()
+
+        # Add systems down overlay, initially hidden
+        self.systemsDownOverlay = OnscreenImage(image="Hud/warning.png", pos=(-.99, 0, 0.6), scale= 0.5)
+        self.systemsDownOverlay.setTransparency(TransparencyAttrib.MAlpha)
+        self.systemsDownOverlay.hide()
 
     def setCamera(self):
         self.disable_mouse()
@@ -169,6 +175,14 @@ class MyApp(ShowBase):
     def enableHud(self):
         self.Hud = OnscreenImage(image ="Hud/crosshair.png", pos = Vec3(0, 0, 0), scale = (0.05))
         self.Hud.setTransparency(TransparencyAttrib.MAlpha)
+
+    def updateSystemsDownOverlay(self, task):
+        playerPos = self.Player.modelNode.getPos()
+        if self.fogZone.inside(playerPos):
+            self.systemsDownOverlay.show()
+        else:
+            self.systemsDownOverlay.hide()
+        return task.cont
 
 app = MyApp() # create instance of MyApp
 app.run() # run application
