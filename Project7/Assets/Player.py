@@ -158,7 +158,6 @@ class player:
 
         else:
             if not self.taskMgr.hasTaskNamed('missileReload'):
-                print('Initializing reload...')
                 self.isReloading = False
                 self.taskMgr.doMethodLater(0, self.reload, 'reload')
 
@@ -166,13 +165,11 @@ class player:
 
     def reload(self, task):
         if not self.isReloading:
-            print('Reloading...')
             self.isReloading = True
 
         if task.time > classesRef.Missile.reloadTime:
             if classesRef.Missile.missileBay > 1:
                 classesRef.Missile.missileBay = 1
-            print('Reload complete.')
             self.isReloading = False
             return Task.done
 
@@ -190,7 +187,6 @@ class player:
                 del classesRef.Missile.collisionSolids[i]
 
                 classesRef.Missile.missileBay += 1
-                print(i + ' has reached the end of its fire solution.')
 
                 break # Refactoring to remove all intervals that have completed their path
 
@@ -198,29 +194,23 @@ class player:
 
     def HandleInto(self, entry):
         fromNode = entry.getFromNodePath().getName()
-        print("fromNode: " + fromNode)
         intoNode = entry.getIntoNodePath().getName()
-        print("intoNode: " + intoNode)
 
         intoPosition = Vec3(entry.getSurfacePoint(self.base.render))
 
         tempVar = fromNode.split('_')
         shooter = tempVar[0]
-        print("Shooter: " + str(shooter))
 
         # Remove the '_cNode' suffix to get node name
         victim = intoNode.replace('_cNode', '')
-        print("Victim: " + victim)
 
         # Remove prefix and suffix to get base item type
         strippedString = re.sub(r'[0-9_]', '', victim)
 
         # Check if object is allowed to be destroyed
         if strippedString in ["Drone", "DroneX", "DroneY", "DroneZ", "BaseballSeam", "Planet", "SpaceStation"]:
-            print(victim, 'hit at ', intoPosition)
             self.DestroyObject(victim, intoPosition)
 
-            print(shooter + ' is DONE.')
             classesRef.Missile.intervals[shooter].finish()
 
     def DestroyObject(self, hitID, hitPosition):
@@ -230,7 +220,6 @@ class player:
         nodeID.detachNode()
 
         self.explodeNode.setPos(hitPosition)
-        print(f"Explosion position: {hitPosition}")
         self.Explode(hitPosition)
 
     def Explode(self, position):

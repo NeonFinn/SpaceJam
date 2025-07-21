@@ -83,8 +83,6 @@ class Missile(SphereCollideObject):
 
         self.collisionNode.show()
 
-        print("Fire torpedo #" + str(Missile.missileCount))
-
 # Create spherical fog zone
 class FogZone:
     def __init__(self, render, position: Vec3, radius: float):
@@ -118,20 +116,21 @@ class Orbiter(SphereCollideObject):
         self.orbitObject = centralObject
         self.orbitRadius = orbitRadius
         self.staringAt = staringAt
+
         Orbiter.numOrbits += 1
+        self.orbitIndex = Orbiter.numOrbits
 
         self.cloudClock = 0
 
-        self.taskFlag = "Traveler-" + str(Orbiter.numOrbits)
+        self.taskFlag = "Traveler-" + str(self.orbitIndex)
         self.taskMgr.add(self.Orbit, self.taskFlag)
 
     def Orbit(self, task):
         if self.orbitType == "MLB":
-            positionVec = defensePaths.BaseballSeams(task.time * Orbiter.velocity, self.numOrbits, 2.0)
+            positionVec = defensePaths.BaseballSeams(task.time * Orbiter.velocity, self.orbitIndex, 2.0)
             self.modelNode.setPos(positionVec * self.orbitRadius + self.orbitObject.modelNode.getPos())
             self.modelNode.lookAt(self.staringAt.modelNode)
             return task.cont
-
 
         elif self.orbitType == "Cloud":
             if self.cloudClock < Orbiter.cloudTimer:

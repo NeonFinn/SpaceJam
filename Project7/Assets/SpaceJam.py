@@ -62,9 +62,13 @@ class MyApp(ShowBase):
             self.cloudDrones = []
 
             self.Sentinal1 = classesRef.Orbiter(self.loader, self.taskMgr, "DroneDefender/DroneDefender.x", self.render,
-                                             "Drone", 10.0, "DroneDefender/Drones.jpg", self.Planet5, 700, "MLB", self.Player)
+                                             "Drone", 10.0, "DroneDefender/Drones.jpg", self.Planet5, 800, "MLB", self.Player)
             self.Sentinal2 = classesRef.Orbiter(self.loader, self.taskMgr, "DroneDefender/DroneDefender.x", self.render,
+                                                "Drone", 10.0, "DroneDefender/Drones.jpg", self.Planet5, 800, "MLB", self.Player)
+            self.Sentinal3 = classesRef.Orbiter(self.loader, self.taskMgr, "DroneDefender/DroneDefender.x", self.render,
                                              "Drone", 6.0, "DroneDefender/Drones.jpg",self.Planet2, 500, "Cloud", self.Player)
+            self.Sentinal4 = classesRef.Orbiter(self.loader, self.taskMgr, "DroneDefender/DroneDefender.x", self.render,
+                                                "Drone", 6.0, "DroneDefender/Drones.jpg", self.Planet2, 500, "Cloud", self.Player)
 
         SetupScene()
         self.enableHud()
@@ -164,7 +168,7 @@ class MyApp(ShowBase):
 
     def enableHud(self):
         self.Hud = OnscreenImage(image ="Hud/crosshair.png", pos = Vec3(0, 0, 0), scale = (0.05))
-        self.Hud.setTransparency(TransparencyAttrib.MAlpha)\
+        self.Hud.setTransparency(TransparencyAttrib.MAlpha)
 
 app = MyApp() # create instance of MyApp
 app.run() # run application
