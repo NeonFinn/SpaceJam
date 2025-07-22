@@ -154,7 +154,8 @@ class player:
                 self.boostDuration -= globalClock.getDt()
                 if self.boostDuration <= 0:
                     self.speedMultiplier = 1.0
-                    self.fireCooldown = 2.0  # back to normal
+                    self.fireCooldown = self.originalFireCooldown  # back to normal
+                    self.fireRateBoost = False
 
         return Task.cont
 
@@ -217,8 +218,13 @@ class player:
         if not self.isReloading:
             self.isReloading = True
 
-        if task.time > classesRef.Missile.reloadTime:
-            if classesRef.Missile.missileBay > 1:
+        # Apply boost effect to reload time
+        effectiveReloadTime = classesRef.Missile.reloadTime
+        if self.fireRateBoost or self.boostDuration > 0:
+            effectiveReloadTime *= 0.25  # 75% faster reload
+
+        if task.time > effectiveReloadTime:
+            if classesRef.Missile.missileBay < 1:
                 classesRef.Missile.missileBay = 1
             self.isReloading = False
             return Task.done
@@ -314,7 +320,8 @@ class player:
         self.explodeEffect.reparentTo(self.explodeNode)
 
     def applyPowerUpBoost(self, duration=5.0):
-        self.speedMultiplier = 2.0
-        self.fireCooldown = 0.5  # faster firing during boost
+        self.speedMultiplier = 3.0
+        self.fireCooldown = 0.5  # faster firing
+        self.fireRateBoost = True
         self.boostDuration = duration
 
