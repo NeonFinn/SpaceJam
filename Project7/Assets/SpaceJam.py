@@ -61,9 +61,15 @@ class MyApp(ShowBase):
 
             self.consumables = []
 
-            self.powerup1 = classesRef.Consumable(self.loader, self.render, 'Power1', Vec3(0, 300, 0), 25)
+            self.powerup1 = classesRef.Consumable(self.loader, self.render, 'Power1', Vec3(-500, 1500, 200), 25)
+            self.powerup2 = classesRef.Consumable(self.loader, self.render, 'Power2', Vec3(1500, 800, -300), 25)
+            self.powerup3 = classesRef.Consumable(self.loader, self.render, 'Power3', Vec3(-1200, -3000, 423), 25)
+            self.powerup4 = classesRef.Consumable(self.loader, self.render, 'Power4', Vec3(-2000, -304, -260), 25)
 
             self.consumables.append(self.powerup1)
+            self.consumables.append(self.powerup2)
+            self.consumables.append(self.powerup3)
+            self.consumables.append(self.powerup4)
 
             for powerup in self.consumables:
                 self.pusher.addCollider(powerup.collisionNode, powerup.modelNode)

@@ -33,7 +33,6 @@ class player:
         self.explodeIntervals = {}
 
         self.traverser = base.cTrav
-
         self.handler = CollisionHandlerEvent()
 
         self.handler.addInPattern('into')
@@ -59,14 +58,15 @@ class player:
         self.moveSound.setVolume(1)
         self.moveSoundPlaying = False
 
+        # Initialize power-up variables
         self.fireCooldown = 0.5
         self.originalFireCooldown = 2.0
-
         self.lastFireTime = 0
-
         self.speedMultiplier = 1.0
         self.fireRateBoost = False
         self.boostDuration = 0.0
+
+        self.moveSound.setPlayRate(1.0)  # Normal speed
 
         self.keys = {
             "forward": False,
@@ -121,6 +121,14 @@ class player:
 
         if self.keys["forward"]:
             self.applyThrust()
+            moveSoundRate = 1.0  # base rate
+            if hasattr(self.base, "fogZone") and self.base.fogZone.inside(self.modelNode.getPos()):
+                moveSoundRate *= 0.75  # slow down in fog
+            if self.fireRateBoost or self.boostDuration > 0:
+                moveSoundRate *= 2.0  # speed up with powerup
+
+            self.moveSound.setPlayRate(moveSoundRate)
+
             if not self.moveSoundPlaying:
                 self.moveSound.play()
                 self.moveSoundPlaying = True
@@ -223,7 +231,7 @@ class player:
         if self.fireRateBoost or self.boostDuration > 0:
             effectiveReloadTime *= 0.25  # 75% faster reload
 
-        if task.time > effectiveReloadTime:
+        if task.time > effectiveReloadTime: # Check if enough time has passed for reload
             if classesRef.Missile.missileBay < 1:
                 classesRef.Missile.missileBay = 1
             self.isReloading = False
