@@ -1,5 +1,3 @@
-import time
-
 from direct.showbase.ShowBaseGlobal import globalClock
 from panda3d.core import Loader, NodePath, Vec3
 from direct.task.Task import TaskManager
@@ -27,7 +25,6 @@ class player:
 
         self.collisionNode = self.modelNode.attachNewNode(CollisionNode(nodeName + '_cNode'))
         self.collisionNode.node().addSolid(CollisionSphere(0, 0, 0, 1))
-        self.collisionNode.show()
 
         self.cntExplode = 0
         self.explodeIntervals = {}
@@ -138,21 +135,19 @@ class player:
                 self.moveSoundPlaying = False
 
         if self.keys["fire"]:
-            currentTime = time.time()
+            currentTime = globalClock.getFrameTime()
 
-            # longer cooldown in fog
             cooldownMultiplier = 1.0
             if hasattr(self.base, "fogZone"):
                 playerPos = self.modelNode.getPos()
                 if self.base.fogZone.inside(playerPos):
-                    cooldownMultiplier = 3.0  # 3x slower
+                    cooldownMultiplier = 3.0  # slower in fog
 
-            effectiveCooldown = self.fireCooldown * cooldownMultiplier
-            if self.fireRateBoost:
-                effectiveCooldown *= 0.25  # 75% faster fire rate
+            effectiveCooldown = self.originalFireCooldown * cooldownMultiplier
+            if self.fireRateBoost or self.boostDuration > 0:
+                effectiveCooldown *= 0.25  # faster fire rate boost
 
-            currentTime = time.time()
-            if currentTime - self.lastFireTime >= self.fireCooldown:
+            if currentTime - self.lastFireTime >= effectiveCooldown:
                 self.fireMissile()
                 self.lastFireTime = currentTime
 
@@ -162,7 +157,6 @@ class player:
                 self.boostDuration -= globalClock.getDt()
                 if self.boostDuration <= 0:
                     self.speedMultiplier = 1.0
-                    self.fireCooldown = self.originalFireCooldown  # back to normal
                     self.fireRateBoost = False
 
         return Task.cont
@@ -329,7 +323,5 @@ class player:
 
     def applyPowerUpBoost(self, duration=5.0):
         self.speedMultiplier = 3.0
-        self.fireCooldown = 0.5  # faster firing
         self.fireRateBoost = True
         self.boostDuration = duration
-

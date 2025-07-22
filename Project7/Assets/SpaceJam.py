@@ -61,16 +61,19 @@ class MyApp(ShowBase):
 
             self.consumables = []
 
+            # Powerups
             self.powerup1 = classesRef.Consumable(self.loader, self.render, 'Power1', Vec3(-500, 1500, 200), 25)
             self.powerup2 = classesRef.Consumable(self.loader, self.render, 'Power2', Vec3(1500, 800, -300), 25)
             self.powerup3 = classesRef.Consumable(self.loader, self.render, 'Power3', Vec3(-1200, -3000, 423), 25)
             self.powerup4 = classesRef.Consumable(self.loader, self.render, 'Power4', Vec3(-2000, -304, -260), 25)
 
+            # add powerups to the list
             self.consumables.append(self.powerup1)
             self.consumables.append(self.powerup2)
             self.consumables.append(self.powerup3)
             self.consumables.append(self.powerup4)
 
+            # add collision to powerups
             for powerup in self.consumables:
                 self.pusher.addCollider(powerup.collisionNode, powerup.modelNode)
                 self.cTrav.addCollider(powerup.collisionNode, self.pusher)
@@ -78,25 +81,29 @@ class MyApp(ShowBase):
             self.Player.modelNode.setHpr(0, 0, 0)
             self.cloudDrones = []
 
-            self.Sentinal1 = classesRef.Orbiter(self.loader, self.taskMgr, "DroneDefender/DroneDefender.x", self.render,
+            # MLB sentinel pattern
+            self.Sentinel1 = classesRef.Orbiter(self.loader, self.taskMgr, "DroneDefender/DroneDefender.x", self.render,
                                              "Drone", 10.0, "DroneDefender/Drones.jpg", self.Planet5, 800, "MLB", self.Player)
-            self.Sentinal2 = classesRef.Orbiter(self.loader, self.taskMgr, "DroneDefender/DroneDefender.x", self.render,
+            self.Sentinel2 = classesRef.Orbiter(self.loader, self.taskMgr, "DroneDefender/DroneDefender.x", self.render,
                                                 "Drone", 10.0, "DroneDefender/Drones.jpg", self.Planet5, 800, "MLB", self.Player)
-            self.Sentinal3 = classesRef.Orbiter(self.loader, self.taskMgr, "DroneDefender/DroneDefender.x", self.render,
-                                             "Drone", 6.0, "DroneDefender/Drones.jpg",self.Planet2, 500, "Cloud", self.Player)
-            self.Sentinal4 = classesRef.Orbiter(self.loader, self.taskMgr, "DroneDefender/DroneDefender.x", self.render,
+
+            # Cloud sentinel pattern
+            self.Sentinel3 = classesRef.Orbiter(self.loader, self.taskMgr, "DroneDefender/DroneDefender.x", self.render,
+                                             "Drone", 6.0, "DroneDefender/Drones.jpg", self.Planet2, 500, "Cloud", self.Player)
+            self.Sentinel4 = classesRef.Orbiter(self.loader, self.taskMgr, "DroneDefender/DroneDefender.x", self.render,
                                                 "Drone", 6.0, "DroneDefender/Drones.jpg", self.Planet2, 500, "Cloud", self.Player)
 
         SetupScene()
         self.enableHud()
         self.taskMgr.add(self.checkPowerupCollision, "CheckPowerupCollision")
-        self.boostTime = 0
         self.taskMgr.add(self.updateSystemsDownOverlay, 'UpdateSystemsDownOverlayTask')
         self.taskMgr.add(self.SpawnDrones, 'SpawnDronesTask')
         self.setCamera()
 
-        # Add systems down overlay, initially hidden
-        self.systemsDownOverlay = OnscreenImage(image="Hud/warning.png", pos=(-.99, 0, 0.6), scale= 0.5)
+        self.boostTime = 0
+
+        # Add systems down but hide until in fog zone
+        self.systemsDownOverlay = OnscreenImage(image="Hud/warning.png", pos=(-.8, 0, 0.8), scale= 0.5)
         self.systemsDownOverlay.setTransparency(TransparencyAttrib.MAlpha)
         self.systemsDownOverlay.hide()
 
@@ -113,6 +120,7 @@ class MyApp(ShowBase):
         drone = classesRef.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
                               droneName, 'DroneDefender/Drones.jpg', position, 5)
         self.cloudDrones.append(drone)
+        drone.collisionNode.hide()
 
     def DrawCloudDefense(self, centralObject, droneName):
         unitVec = defensePaths.Cloud(radius=1)
@@ -122,6 +130,7 @@ class MyApp(ShowBase):
         drone = classesRef.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
                               droneName, 'DroneDefender/Drones.jpg', position, 5)
         self.cloudDrones.append(drone)
+        drone.collisionNode.hide()
 
     def DrawCircleX(self, droneName, radius = 1, numPoints = 100, step = 50):
         points = defensePaths.CircleX(radius, numPoints)
@@ -132,6 +141,7 @@ class MyApp(ShowBase):
             drone = classesRef.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
                                   droneName, 'DroneDefender/Drones.jpg', position, 5)
             self.cloudDrones.append(drone)
+            drone.collisionNode.hide()
 
     def DrawCircleY(self, droneName, radius = 1, numPoints = 100, step = 50):
         points = defensePaths.CircleY(radius, numPoints)
@@ -142,6 +152,7 @@ class MyApp(ShowBase):
             drone = classesRef.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
                                   droneName, 'DroneDefender/Drones.jpg', position, 5)
             self.cloudDrones.append(drone)
+            drone.collisionNode.hide()
 
 
     def DrawCircleZ(self, droneName, radius = 1, numPoints = 100, step = 50):
@@ -153,6 +164,7 @@ class MyApp(ShowBase):
             drone = classesRef.Drone(self.loader, 'DroneDefender/DroneDefender.x', self.render,
                                   droneName, 'DroneDefender/Drones.jpg', position, 5)
             self.cloudDrones.append(drone)
+            drone.collisionNode.hide()
 
     def SpawnDrones(self, task):
         if task.frame == 0:
@@ -186,6 +198,7 @@ class MyApp(ShowBase):
                           droneName, 'DroneDefender/Drones.jpg', position, 5)
 
             self.cloudDrones.append(drone)
+            drone.collisionNode.hide()
             self.pusher.addCollider(drone.collisionNode, drone.modelNode)
             self.cTrav.addCollider(drone.collisionNode, self.pusher)
 

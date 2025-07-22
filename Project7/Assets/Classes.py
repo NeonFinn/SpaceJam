@@ -81,8 +81,6 @@ class Missile(SphereCollideObject):
         Missile.cNodes[nodeName] = self.collisionNode
         Missile.collisionSolids[nodeName] = self.collisionNode.node().getSolid(0)
 
-        self.collisionNode.show()
-
 # Create spherical fog zone
 class FogZone:
     def __init__(self, render, position: Vec3, radius: float):

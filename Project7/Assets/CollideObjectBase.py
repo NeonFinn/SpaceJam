@@ -30,7 +30,6 @@ class SphereCollideObject(CollideableObject):
         super(SphereCollideObject, self).__init__(loader, modelPath, parentNode, nodeName)
 
         self.collisionNode.node().addSolid(CollisionSphere(colPosVec, colRadius))
-        self.collisionNode.show()
 
         if isinstance(texPath, str):
             tex = loader.loadTexture(texPath)
@@ -49,4 +48,3 @@ class CapsuleCollideObject:
         self.collisionNode = CollisionNode(nodeName + '_cNode')
         self.collisionNode.addSolid(capsule)
         self.collisionNodePath = self.modelNode.attachNewNode(self.collisionNode)
-        self.collisionNodePath.show()
