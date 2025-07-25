@@ -99,6 +99,12 @@ class MyApp(ShowBase):
             self.Wanderer2 = classesRef.Wanderer(self.loader, "DroneDefender/DroneDefender.x", self.render, "Wanderer2",
                                                  "Drone", 6.0, "DroneDefender/Drones.jpg", self.Player, startPos=Vec3(100, -300, 100))
 
+            self.pusher.addCollider(self.Wanderer1.collisionNode, self.Wanderer1.modelNode)
+            self.cTrav.addCollider(self.Wanderer1.collisionNode, self.pusher)
+
+            self.pusher.addCollider(self.Wanderer2.collisionNode, self.Wanderer2.modelNode)
+            self.cTrav.addCollider(self.Wanderer2.collisionNode, self.pusher)
+
         SetupScene()
         self.enableHud()
         self.taskMgr.add(self.checkPowerupCollision, "CheckPowerupCollision")

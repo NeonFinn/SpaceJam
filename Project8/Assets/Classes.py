@@ -176,6 +176,8 @@ class Wanderer(SphereCollideObject):
         self.modelNode.setScale(scaleVec)
 
         self.collisionNode.setTag("type", "wanderer")
+        self.modelNode.setTag("type", "wanderer")
+        self.collisionNode.node().setName(f"{modelName}_cNode")
 
         tex = loader.loadTexture(texPath)
         self.modelNode.setTexture(tex, 1)
