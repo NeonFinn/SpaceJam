@@ -175,6 +175,8 @@ class Wanderer(SphereCollideObject):
         self.modelNode.setName(modelName)
         self.modelNode.setScale(scaleVec)
 
+        self.collisionNode.setTag("type", "wanderer")
+
         tex = loader.loadTexture(texPath)
         self.modelNode.setTexture(tex, 1)
         self.staringAt = staringAt

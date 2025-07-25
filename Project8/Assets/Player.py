@@ -266,7 +266,7 @@ class player:
         strippedString = re.sub(r'[0-9_]', '', victim)
 
         # Check if object is allowed to be destroyed
-        if strippedString in ["Drone", "DroneX", "DroneY", "DroneZ", "BaseballSeam", "Planet", "SpaceStation"]:
+        if strippedString in ["Drone", "DroneX", "DroneY", "DroneZ", "BaseballSeam", "Planet", "SpaceStation", "Wanderer"]:
             self.DestroyObject(victim, intoPosition)
 
             classesRef.Missile.intervals[shooter].finish()
