@@ -26,7 +26,6 @@ class MyApp(ShowBase):
         self.enableParticles() # Call function to actually let particles show up... I forgot last time
 
         self.score = 0
-
         self.pointsTable = {
             "Planet": 100,
             "Drone": 10,
