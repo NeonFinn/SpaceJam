@@ -271,6 +271,11 @@ class player:
 
             classesRef.Missile.intervals[shooter].finish()
 
+        if strippedString in self.base.pointsTable:
+            self.base.addScore(self.base.pointsTable[strippedString])
+            self.DestroyObject(victim, intoPosition)
+            classesRef.Missile.intervals[shooter].finish()
+
     def DestroyObject(self, hitID, hitPosition):
         nodeID = self.base.render.find(f"**/{hitID}")
         if nodeID.isEmpty():

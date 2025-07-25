@@ -4,6 +4,7 @@ from panda3d.core import *
 from panda3d.core import CollisionTraverser, CollisionHandlerPusher
 from direct.gui.OnscreenImage import OnscreenImage
 from panda3d.physics import PhysicsManager, ParticleSystemManager
+from direct.gui.OnscreenText import OnscreenText
 
 import Classes as classesRef
 import DefensePaths as defensePaths
@@ -23,6 +24,29 @@ class MyApp(ShowBase):
         base.particleMgr = self.particleMgr
 
         self.enableParticles() # Call function to actually let particles show up... I forgot last time
+
+        self.score = 0
+
+        self.pointsTable = {
+            "Planet": 100,
+            "Drone": 10,
+            "DroneX": 10,
+            "DroneY": 10,
+            "DroneZ": 10,
+            "BaseballSeam": 10,
+            "SpaceStation": 50,
+            "Wanderer": 25,
+            "sphere.egg": 50,
+        }
+
+        self.scoreText = OnscreenText(
+            text=f"Score: {self.score}",
+            pos=(1.3, 0.9),
+            scale=0.07,
+            fg=(1, 1, 1, 1),
+            align=TextNode.ARight,
+            mayChange=True
+        )
 
         def SetupScene():
             self.Universe = classesRef.Universe(self.loader, 'Universe/Universe.x', self.render, 'Universe',
@@ -236,6 +260,11 @@ class MyApp(ShowBase):
                 if dist < 50:
                     powerup.collect()
                     self.activateBoost()
+
+                    powerupName = powerup.modelNode.getName()
+                    if powerupName in self.pointsTable:
+                        self.addScore(self.pointsTable[powerupName])
+
         return task.cont
 
     def activateBoost(self):
@@ -254,6 +283,10 @@ class MyApp(ShowBase):
             self.Player.fireCooldown = self.Player.originalFireCooldown  # reset properly
             return task.done
         return task.cont
+
+    def addScore(self, points):
+        self.score += points
+        self.scoreText.setText(f"Score: {self.score}")
 
 app = MyApp() # create instance of MyApp
 app.run() # run application
